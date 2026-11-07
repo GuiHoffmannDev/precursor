@@ -1,0 +1,20 @@
+services:
+  db:
+    # ParadeDB = Postgres 17 + pg_search (BM25) + pgvector in one image.
+    image: paradedb/paradedb:0.26.3-pg17
+    environment:
+      POSTGRES_USER: precursor
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-precursor-dev}
+      POSTGRES_DB: precursor
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U precursor -d precursor"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  pgdata:

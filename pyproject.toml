@@ -1,0 +1,29 @@
+[project]
+name = "precursor"
+version = "0.1.0"
+description = "Agentic product-safety signal detection over NHTSA complaints"
+requires-python = ">=3.12"
+dependencies = [
+    "certifi>=2026.10.23",
+    "psycopg[binary]>=3.2",
+]
+
+[project.scripts]
+precursor = "precursor.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Import from src directly so tests do not depend on the editable-install .pth file.
+pythonpath = ["src"]
+
+[tool.uv]
+# Rebuild the package when sources change, so non-editable installs
+# (`uv run --no-editable`, UV_NO_EDITABLE=1) never run stale code.
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/**/*" }]
