@@ -55,6 +55,52 @@ create index if not exists complaints_available_at_idx
 create index if not exists complaints_bm25_idx
     on complaints using bm25 (odino, narrative, available_at);
 
+-- Narrative embeddings. text_hash detects narratives changed by a later NHTSA
+-- release, so the embed job re-embeds them. Dimension is fixed by the model.
+create table if not exists complaint_embeddings (
+    odino       text primary key references complaints (odino) on delete cascade,
+    model       text not null,
+    text_hash   text not null,              -- md5(narrative) at embedding time
+    embedding   halfvec(768) not null,
+    created_at  timestamptz not null default now()
+);
+
+create index if not exists complaint_embeddings_hnsw_idx
+    on complaint_embeddings using hnsw (embedding halfvec_cosine_ops);
+
+-- LLM weak labels (hazard, severity, entity spans) used to train and evaluate the
+-- small models. label is null and error set when the LLM never produced a valid answer.
+create table if not exists llm_labels (
+    odino           text not null references complaints (odino) on delete cascade,
+    prompt_version  text not null,
+    model           text not null,
+    label           jsonb,
+    error           text,
+    attempts        integer not null,
+    created_at      timestamptz not null default now(),
+    primary key (odino, prompt_version)
+);
+
+-- Human-reviewed labels on held-out complaints: the ground truth for evaluation.
+create table if not exists gold_labels (
+    odino       text primary key references complaints (odino) on delete cascade,
+    hazard      text not null,
+    severity    text not null,
+    notes       text,
+    created_at  timestamptz not null default now()
+);
+
+-- Distilled classifier output for every embedded complaint.
+create table if not exists complaint_predictions (
+    odino           text primary key references complaints (odino) on delete cascade,
+    model_version   text not null,          -- prompt version : model kinds : training date
+    hazard          text not null,
+    hazard_conf     real not null,
+    severity        text not null,
+    severity_conf   real not null,
+    created_at      timestamptz not null default now()
+);
+
 -- One row per (campaign, make, model, year, component), as in FLAT_RCL.
 create table if not exists recalls (
     campno                  text not null,      -- NHTSA recall number

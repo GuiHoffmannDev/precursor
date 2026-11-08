@@ -1,0 +1,64 @@
+{
+  "prompt_version": "hazard-v1",
+  "embedding_model": "Alibaba-NLP/gte-modernbert-base",
+  "n_train": 2410,
+  "n_test": 590,
+  "tasks": {
+    "hazard": {
+      "best": "embedding_probe",
+      "results": {
+        "majority": {
+          "macro_f1": 0.0327,
+          "accuracy": 0.2966
+        },
+        "tfidf": {
+          "macro_f1": 0.6256,
+          "accuracy": 0.7305
+        },
+        "embedding_probe": {
+          "macro_f1": 0.6742,
+          "accuracy": 0.7559
+        }
+      },
+      "label_counts": {
+        "airbag_or_restraint": 367,
+        "braking_failure": 187,
+        "driver_assistance": 76,
+        "electrical_or_instrument": 192,
+        "fire_or_fuel_leak": 160,
+        "loss_of_propulsion": 884,
+        "loss_of_steering": 232,
+        "not_safety_related": 137,
+        "other_safety": 27,
+        "rollaway_or_shifter": 48,
+        "structural_or_detachment": 309,
+        "tire_or_wheel": 61,
+        "unintended_acceleration": 83,
+        "visibility_or_lighting": 237
+      }
+    },
+    "severity": {
+      "best": "tfidf",
+      "results": {
+        "majority": {
+          "macro_f1": 0.1855,
+          "accuracy": 0.5898
+        },
+        "tfidf": {
+          "macro_f1": 0.6944,
+          "accuracy": 0.7915
+        },
+        "embedding_probe": {
+          "macro_f1": 0.6873,
+          "accuracy": 0.7119
+        }
+      },
+      "label_counts": {
+        "incident": 986,
+        "injury": 84,
+        "none": 192,
+        "potential": 1738
+      }
+    }
+  }
+}

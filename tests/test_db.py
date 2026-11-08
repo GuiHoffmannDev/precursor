@@ -37,7 +37,7 @@ def test_url():
 @pytest.fixture
 def conn(test_url):
     with psycopg.connect(test_url) as c:
-        c.execute("truncate complaints, complaint_products, recalls")
+        c.execute("truncate complaints, recalls cascade")
         c.commit()
         yield c
 
@@ -78,6 +78,51 @@ def test_search_respects_as_of(conn):
     hits = search(conn, "steering locked", as_of=date(2024, 6, 1))
     assert [r["odino"] for r in hits] == ["1"]
     assert hits[0]["vehicles"] == "FORD EXPLORER 2016"
+
+
+def test_embed_pending_is_resumable_and_reembeds_changed_narratives(conn):
+    from precursor.embed import embed_pending
+
+    def fake_encode(texts):
+        return ["[" + ",".join(["0.1"] * 768) + "]" for _ in texts]
+
+    load_complaints(conn, complaints(complaint_line(f2="1"), complaint_line(f2="2")))
+    conn.commit()
+    assert embed_pending(conn, fake_encode, batch=1) == 2
+    assert embed_pending(conn, fake_encode) == 0
+    load_complaints(conn, complaints(complaint_line(f2="2", f20="Narrative corrected in a later release.")))
+    conn.commit()
+    assert embed_pending(conn, fake_encode) == 1
+
+
+def test_label_sample_skips_network_failures_and_stops_when_service_is_down(conn, monkeypatch):
+    import urllib.error
+
+    from precursor import label
+
+    narrative = "The steering wheel locked up on the highway, case {}."  # sampler needs >= 40 chars
+    load_complaints(conn, complaints(*(complaint_line(f2=str(i), f20=narrative.format(i))
+                                       for i in range(1, 6))))
+    conn.commit()
+    ok = ({"hazard": "loss_of_steering", "severity": "potential", "entities": [], "dropped_entities": 0}, None, 1)
+
+    def flaky(narrative):
+        if "case 3" in narrative:
+            raise urllib.error.URLError("502")
+        return ok
+
+    monkeypatch.setattr(label, "label_one", flaky)
+    stats = label.label_sample(conn, 5, workers=2)
+    assert stats["labeled"] == 4 and stats["failed"] == 1
+    assert conn.execute("select count(*) from llm_labels").fetchone() == (4,)  # failure not stored
+
+    def down(narrative):
+        raise urllib.error.URLError("connection refused")
+
+    monkeypatch.setattr(label, "label_one", down)
+    monkeypatch.setattr(label, "MAX_CONSECUTIVE_FAILURES", 1)
+    with pytest.raises(RuntimeError, match="in a row"):
+        label.label_sample(conn, 5, workers=1)
 
 
 def test_search_rejects_empty_query(conn):

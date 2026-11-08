@@ -23,6 +23,35 @@ def main(argv: list[str] | None = None) -> int:
     ingest.add_argument("--data-dir", type=Path, default=Path("data/raw"))
     ingest.add_argument("--refresh", action="store_true", help="re-download even if cached")
 
+    emb = sub.add_parser("embed", help="embed narratives that are missing or stale")
+    emb.add_argument("--limit", type=int, help="stop after this many complaints")
+    emb.add_argument("--labeled-only", action="store_true", help="only complaints with LLM labels")
+
+    lab = sub.add_parser("label", help="LLM weak labels for a random sample of complaints")
+    lab.add_argument("--n", type=int, default=100, help="complaints to label")
+    lab.add_argument("--workers", type=int, default=8, help="concurrent LLM requests")
+
+    cls = sub.add_parser("classify", help="distill LLM labels into classifiers and report metrics")
+    cls.add_argument("--report", type=Path, default=Path("reports/classifier.json"))
+    cls.add_argument("--score", action="store_true", help="also score every embedded complaint")
+
+    nerp = sub.add_parser("ner-eval", help="evaluate zero-shot GLiNER against LLM entity spans")
+    nerp.add_argument("--thresholds", type=float, nargs="+", default=[0.3, 0.5])
+    nerp.add_argument("--limit", type=int, help="max test documents")
+    nerp.add_argument("--report", type=Path, default=Path("reports/ner.json"))
+    nerp.add_argument("--model", default=None, help="local fine-tuned model dir (default: base GLiNER)")
+
+    nert = sub.add_parser("ner-train", help="fine-tune GLiNER on the train split of LLM entity spans")
+    nert.add_argument("--output", type=Path, default=Path("models/gliner-precursor"))
+    nert.add_argument("--epochs", type=int, default=3)
+    nert.add_argument("--batch-size", type=int, default=8,
+                      help="lower it (e.g. 2) on 16 GB Macs: GPU memory is shared with Docker")
+
+    gold = sub.add_parser("gold", help="human gold labels: export, import, score")
+    gold.add_argument("action", choices=["export", "import", "score"])
+    gold.add_argument("--path", type=Path, default=Path("data/review/gold_review.csv"))
+    gold.add_argument("--n", type=int, default=200, help="rows to export")
+
     find = sub.add_parser("search", help="BM25 search over complaint narratives")
     find.add_argument("query")
     find.add_argument("--as-of", type=date.fromisoformat, help="only complaints public by this date")
@@ -35,11 +64,75 @@ def main(argv: list[str] | None = None) -> int:
             print("schema ready")
         elif args.command == "ingest":
             return _ingest(conn, args)
+        elif args.command == "embed":
+            _embed(conn, args.limit, args.labeled_only)
+        elif args.command == "classify":
+            import json
+
+            from precursor import classify
+
+            data = classify.load_dataset(conn)
+            report = classify.evaluate(data)
+            args.report.parent.mkdir(parents=True, exist_ok=True)
+            args.report.write_text(json.dumps(report, indent=2) + "\n")
+            for task, t in report["tasks"].items():
+                print(task, "best:", t["best"], t["results"])
+            if args.score:
+                print(f"scored {classify.score_corpus(conn, data, report)} complaints")
+        elif args.command == "ner-eval":
+            import json
+
+            from precursor import ner
+
+            name = args.model or ner.GLINER_MODEL
+            report = ner.evaluate(conn, ner.load_model(name), thresholds=args.thresholds,
+                                  limit=args.limit, model_name=name)
+            args.report.parent.mkdir(parents=True, exist_ok=True)
+            args.report.write_text(json.dumps(report, indent=2) + "\n")
+            for run in report["runs"]:
+                print(run["prompts"], run["threshold"], "exact", run["exact"]["micro"], "overlap", run["overlap"]["micro"])
+        elif args.command == "ner-train":
+            from precursor import ner
+
+            print(f"saved to {ner.finetune(conn, args.output, epochs=args.epochs, batch_size=args.batch_size)}")
+        elif args.command == "gold":
+            from precursor import gold as g
+
+            if args.action == "export":
+                print(f"wrote {g.export_sheet(conn, args.path, args.n)} rows to {args.path}")
+            elif args.action == "import":
+                try:
+                    print(f"imported {g.import_sheet(conn, args.path)} gold labels")
+                except ValueError as e:
+                    print(f"nothing imported, fix these rows:\n{e}", file=sys.stderr)
+                    return 1
+            else:
+                print(g.score(conn))
+        elif args.command == "label":
+            from precursor import label
+
+            start = time.monotonic()
+            stats = label.label_sample(conn, args.n, workers=args.workers)
+            print(f"{stats} with {label.MODEL} ({label.PROMPT_VERSION}) in {time.monotonic() - start:.0f}s")
         else:
             for r in search(conn, args.query, as_of=args.as_of, k=args.k):
                 print(f"[{r['score']:.2f}] {r['odino']} {r['available_at']} | {r['vehicles']} | {r['components']}")
                 print(textwrap.indent(textwrap.shorten(r["narrative"], 300), "    "))
     return 0
+
+
+def _embed(conn, limit: int | None, labeled_only: bool) -> None:
+    from precursor import embed  # heavy import (torch), only for this command
+
+    model = embed.load_model()
+    start = time.monotonic()
+
+    def progress(done: int) -> None:
+        print(f"embedded {done} ({done / (time.monotonic() - start):.0f}/s)", flush=True)
+
+    total = embed.embed_pending(conn, lambda texts: embed.encode(model, texts), limit=limit,
+                                labeled_only=labeled_only, on_batch=progress)
+    print(f"done: {total} complaints embedded with {embed.MODEL}")
 
 
 def _ingest(conn, args) -> int:

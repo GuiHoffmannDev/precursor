@@ -1,0 +1,215 @@
+{
+  "model": "urchade/gliner_small-v2.1",
+  "n_docs": 590,
+  "n_gold_spans": 2964,
+  "runs": [
+    {
+      "prompts": "short",
+      "threshold": 0.3,
+      "exact": {
+        "micro": {
+          "precision": 0.3313,
+          "recall": 0.3161,
+          "f1": 0.3235
+        },
+        "per_label": {
+          "component": {
+            "precision": 0.3637,
+            "recall": 0.6361,
+            "f1": 0.4628
+          },
+          "driving_condition": {
+            "precision": 0.15,
+            "recall": 0.0504,
+            "f1": 0.0754
+          },
+          "failure_mode": {
+            "precision": 0.2407,
+            "recall": 0.0896,
+            "f1": 0.1306
+          }
+        }
+      },
+      "overlap": {
+        "micro": {
+          "precision": 0.4254,
+          "recall": 0.4059,
+          "f1": 0.4154
+        },
+        "per_label": {
+          "component": {
+            "precision": 0.4445,
+            "recall": 0.7774,
+            "f1": 0.5656
+          },
+          "driving_condition": {
+            "precision": 0.4944,
+            "recall": 0.166,
+            "f1": 0.2486
+          },
+          "failure_mode": {
+            "precision": 0.2986,
+            "recall": 0.1111,
+            "f1": 0.162
+          }
+        }
+      }
+    },
+    {
+      "prompts": "short",
+      "threshold": 0.5,
+      "exact": {
+        "micro": {
+          "precision": 0.4222,
+          "recall": 0.2443,
+          "f1": 0.3095
+        },
+        "per_label": {
+          "component": {
+            "precision": 0.4348,
+            "recall": 0.5162,
+            "f1": 0.472
+          },
+          "driving_condition": {
+            "precision": 0.2727,
+            "recall": 0.0224,
+            "f1": 0.0414
+          },
+          "failure_mode": {
+            "precision": 0.3473,
+            "recall": 0.05,
+            "f1": 0.0873
+          }
+        }
+      },
+      "overlap": {
+        "micro": {
+          "precision": 0.509,
+          "recall": 0.2945,
+          "f1": 0.3732
+        },
+        "per_label": {
+          "component": {
+            "precision": 0.5213,
+            "recall": 0.6188,
+            "f1": 0.5659
+          },
+          "driving_condition": {
+            "precision": 0.5,
+            "recall": 0.041,
+            "f1": 0.0759
+          },
+          "failure_mode": {
+            "precision": 0.4012,
+            "recall": 0.0577,
+            "f1": 0.1009
+          }
+        }
+      }
+    },
+    {
+      "prompts": "descriptive",
+      "threshold": 0.3,
+      "exact": {
+        "micro": {
+          "precision": 0.3398,
+          "recall": 0.3003,
+          "f1": 0.3188
+        },
+        "per_label": {
+          "component": {
+            "precision": 0.368,
+            "recall": 0.6235,
+            "f1": 0.4628
+          },
+          "driving_condition": {
+            "precision": 0.1202,
+            "recall": 0.0466,
+            "f1": 0.0672
+          },
+          "failure_mode": {
+            "precision": 0.2841,
+            "recall": 0.0646,
+            "f1": 0.1053
+          }
+        }
+      },
+      "overlap": {
+        "micro": {
+          "precision": 0.4292,
+          "recall": 0.3792,
+          "f1": 0.4027
+        },
+        "per_label": {
+          "component": {
+            "precision": 0.449,
+            "recall": 0.7609,
+            "f1": 0.5647
+          },
+          "driving_condition": {
+            "precision": 0.3125,
+            "recall": 0.1213,
+            "f1": 0.1747
+          },
+          "failure_mode": {
+            "precision": 0.3598,
+            "recall": 0.0818,
+            "f1": 0.1333
+          }
+        }
+      }
+    },
+    {
+      "prompts": "descriptive",
+      "threshold": 0.5,
+      "exact": {
+        "micro": {
+          "precision": 0.4309,
+          "recall": 0.2274,
+          "f1": 0.2977
+        },
+        "per_label": {
+          "component": {
+            "precision": 0.4431,
+            "recall": 0.4949,
+            "f1": 0.4676
+          },
+          "driving_condition": {
+            "precision": 0.1571,
+            "recall": 0.0205,
+            "f1": 0.0363
+          },
+          "failure_mode": {
+            "precision": 0.4557,
+            "recall": 0.031,
+            "f1": 0.0581
+          }
+        }
+      },
+      "overlap": {
+        "micro": {
+          "precision": 0.5211,
+          "recall": 0.275,
+          "f1": 0.36
+        },
+        "per_label": {
+          "component": {
+            "precision": 0.535,
+            "recall": 0.5975,
+            "f1": 0.5645
+          },
+          "driving_condition": {
+            "precision": 0.2571,
+            "recall": 0.0336,
+            "f1": 0.0594
+          },
+          "failure_mode": {
+            "precision": 0.5063,
+            "recall": 0.0345,
+            "f1": 0.0645
+          }
+        }
+      }
+    }
+  ]
+}

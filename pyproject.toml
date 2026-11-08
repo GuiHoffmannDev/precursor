@@ -4,8 +4,14 @@ version = "0.1.0"
 description = "Agentic product-safety signal detection over NHTSA complaints"
 requires-python = ">=3.12"
 dependencies = [
+    "accelerate>=1.1.0",
     "certifi>=2026.10.23",
+    "gliner>=0.2.30",
+    "protobuf>=7.36.2",
     "psycopg[binary]>=3.2",
+    "scikit-learn>=1.9.1",
+    "sentence-transformers>=6.2.0",
+    "sentencepiece>=0.2.3",
 ]
 
 [project.scripts]
