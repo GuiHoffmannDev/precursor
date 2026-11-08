@@ -137,3 +137,41 @@ def test_recall_reload_replaces_whole_campaign(conn):
     load_recalls(conn, recalls(recall_line(f1="1", f5="2016"), recall_line(f1="2", f5="2017")))
     load_recalls(conn, recalls(recall_line(f1="7", f5="2016")))
     assert conn.execute("select record_id, model_year from recalls").fetchall() == [(7, 2016)]
+
+
+def test_signal_data_applies_leakage_guards_and_suppresses_known_recalls(conn):
+    from psycopg.types.json import Jsonb
+
+    from precursor import signals
+    from precursor.label import RECALL_PROMPT_VERSION
+
+    jan, later = {"f16": "20240101", "f17": "20240101"}, {"f16": "20250101", "f17": "20250101"}
+    load_complaints(conn, complaints(
+        complaint_line(f2="1", f20="Brakes failed on the highway.", **jan),
+        complaint_line(f2="2", f21="RC", **jan),  # produced by the recall process
+        complaint_line(f2="3", f20="Dealer says recall 14V-373 parts are not available.", **jan),
+        complaint_line(f2="4", **later),  # not public yet
+        complaint_line(f2="5", **jan),  # predicted not safety related
+    ))
+    conn.cursor().executemany(
+        "insert into complaint_predictions (odino, model_version, hazard, hazard_conf, severity, severity_conf)"
+        " values (%s, 'test', %s, 0.9, 'incident', 0.9)",
+        [(o, "braking_failure") for o in "1234"] + [("5", "not_safety_related")])
+    conn.execute("truncate recall_labels")
+    load_recalls(conn, [nhtsa.parse_recall(recall_line(f16="20240301").split("\t"))])  # FORD EXPLORER 2016
+    conn.execute("insert into recall_labels (campno, prompt_version, model, label, attempts)"
+                 " values ('25V001000', %s, 'test', %s, 1)",
+                 (RECALL_PROMPT_VERSION, Jsonb({"hazard": "braking_failure", "secondary_hazard": None})))
+
+    data = signals.load_signal_data(conn, date(2024, 6, 1))
+    assert data.vehicles == [("FORD", "EXPLORER", 2016)]
+    assert len(data.day) == 1 and data.severe.tolist() == [True]
+    recalls = signals.load_recalls(conn, data, date(2024, 6, 1))
+    assert [(r.campno, r.cells.tolist()) for r in recalls] == [
+        ("25V001000", [signals.SIGNAL_HAZARDS.index("braking_failure")])]
+    assert signals.load_recalls(conn, data, date(2024, 2, 1)) == []
+
+    det = signals.Detector(window_weeks=52, min_count=1)
+    hits = signals.signals(conn, date(2024, 2, 1), det=det)
+    assert [(h["make"], h["hazard"], h["complaints"]) for h in hits] == [("FORD", "braking_failure", 1)]
+    assert signals.signals(conn, date(2024, 6, 1), det=det) == []  # the recall is public by then

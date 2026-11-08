@@ -81,6 +81,20 @@ create table if not exists llm_labels (
     primary key (odino, prompt_version)
 );
 
+-- LLM hazard labels for recall campaigns (same taxonomy as complaints), the backtest
+-- labels. Built from defect/consequence text, which is public from the report date.
+-- label is null and error set when the LLM never produced a valid answer.
+create table if not exists recall_labels (
+    campno          text not null,
+    prompt_version  text not null,
+    model           text not null,
+    label           jsonb,
+    error           text,
+    attempts        integer not null,
+    created_at      timestamptz not null default now(),
+    primary key (campno, prompt_version)
+);
+
 -- Human-reviewed labels on held-out complaints: the ground truth for evaluation.
 create table if not exists gold_labels (
     odino       text primary key references complaints (odino) on delete cascade,

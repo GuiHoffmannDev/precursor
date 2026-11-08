@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from precursor.label import MAX_ATTEMPTS, LabelError, label_one, parse_label
+from precursor.label import MAX_ATTEMPTS, LabelError, label_one, parse_label, parse_recall_label
 
 NARRATIVE = "WHILE DRIVING ON THE HIGHWAY THE STEERING WHEEL LOCKED UP. Dealer could not fix it."
 
@@ -61,3 +61,23 @@ def test_label_one_repairs_once_then_gives_up():
     label, error, attempts = label_one(NARRATIVE, chat=always_bad)
     assert label is None and "no JSON" in error and attempts == MAX_ATTEMPTS
     assert "Invalid answer" in seen[-1][-1]["content"]  # repair prompt shows the error
+
+
+def test_parse_recall_label_accepts_an_optional_distinct_secondary_hazard():
+    assert parse_recall_label('{"hazard": "fire_or_fuel_leak", "secondary_hazard": null}', "") == {
+        "hazard": "fire_or_fuel_leak", "secondary_hazard": None}
+    both = parse_recall_label('{"hazard": "loss_of_propulsion", "secondary_hazard": "fire_or_fuel_leak"}', "")
+    assert both["secondary_hazard"] == "fire_or_fuel_leak"
+    same = parse_recall_label('{"hazard": "fire_or_fuel_leak", "secondary_hazard": "fire_or_fuel_leak"}', "")
+    assert same["secondary_hazard"] is None
+
+
+@pytest.mark.parametrize("content", [
+    "no json",
+    '{"hazard": "engine fire"}',
+    '{"hazard": "fire_or_fuel_leak", "secondary_hazard": "smoke"}',
+    '["fire_or_fuel_leak"]',
+])
+def test_parse_recall_label_rejects_contract_violations(content):
+    with pytest.raises(LabelError):
+        parse_recall_label(content, "")

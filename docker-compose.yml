@@ -2,6 +2,8 @@ services:
   db:
     # ParadeDB = Postgres 17 + pg_search (BM25) + pgvector in one image.
     image: paradedb/paradedb:0.26.3-pg17
+    # Docker's 64 MB /dev/shm default is too small for parallel hash joins over the corpus.
+    shm_size: 512mb
     environment:
       POSTGRES_USER: precursor
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-precursor-dev}

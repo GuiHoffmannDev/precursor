@@ -57,7 +57,94 @@ complaints runs in ~50 ms.
 - Human gold set: review sheet export/import with strict validation; LLM and
   classifier are scored against it (`precursor gold score`).
 
-**Next:** signal detection → backtest → LangGraph investigation agents → eval harness and LLMOps.
+**Phase 3 — signal detection and leakage-free backtest (done)**
+
+Question: do NHTSA complaints show a defect before the manufacturer files the Part 573
+recall report (`RCDATE`)? Short answer: sometimes, mostly for recalls that NHTSA itself
+pushed; the statistical detector does not beat a raw-count baseline.
+
+- **Signal cell:** one vehicle (make, model, model year) × one of 13 hazards (the
+  complaint taxonomy without `not_safety_related`). The hazard comes from the
+  distilled narrative classifier, never from the component field.
+- **Eligible complaints** (as of a date): `available_at <= as_of`, `source_type` not
+  RC/RP/DP, and no campaign number quoted in the narrative
+  (`\d{2}[VETC]-?\d{3}(000)?`, which removes 99,576 complaints, 12.6%). As of
+  2025-12-31: 592,088 complaint × vehicle rows over 16,089 vehicles.
+- **Detector:** Poisson disproportionality (PRR-style). In a trailing window, a cell's
+  expected count is its vehicle's complaint volume times the hazard's share among all
+  other vehicles; score = −log10 P(X ≥ observed). Severe complaints (crash, fire,
+  injury, death, or predicted severity incident/injury) can count more than once.
+  Baseline: raw count in the window.
+- **Triage queue:** each week an analyst reviews the top-K *new* cells. A cell is not
+  re-alerted within a year, and cells with a recall reported in the past year are
+  suppressed (that recall is public as of the week, so this uses no future data).
+- **Recall labels:** `gemma4:31b-cloud` maps every vehicle campaign reported since
+  2018 (7,916) to a primary hazard and an optional secondary one from the defect and
+  consequence summaries (`recall_labels`, prompt `recall-hazard-v1`; 0 invalid
+  answers; 1,501 campaigns got a secondary hazard). Same validation and repair
+  pattern as complaint labels.
+- **Matching:** a recall is detected when any of its cells (each recalled vehicle ×
+  each of its hazards) alerted in the 365 days before `RCDATE`. Lead = `RCDATE` minus
+  the earliest such alert. An alert is a hit when a recall on its cell follows within
+  365 days; alerts after 2025-11-02 (one year before the end of the recall data) are
+  not judged.
+- **Protocol:** window (4/13/26 weeks), minimum count (3/5) and severe weight (1/2/3)
+  were tuned on 2019–2020 recalls (objective: share detected ≥ 30 days early at
+  K = 25). Numbers below are on the untouched 2021–2025 recalls (4,656 vehicle
+  campaigns). The whole grid runs in ~10 s (`reports/backtest.json`).
+
+  Test 2021–2025, K = 25 new alerts per week:
+
+  | Detector (selected on dev) | Detected before RCDATE | ≥ 30 d | ≥ 90 d | Median lead | Precision | Random-pick precision | False alarms / week |
+  |---|---|---|---|---|---|---|---|
+  | Raw count, 26-week window | 6.1% | 5.6% | 4.6% | 215 d | **8.7%** | 6.6% | 22.8 |
+  | Disproportionality, 13 weeks | 6.1% | 5.6% | 4.5% | 198 d | 7.8% | 7.8% | 23.0 |
+  | + severity weight 2 (default) | 6.2% | 5.7% | 4.4% | 186 d | 7.8% | 7.8% | 23.1 |
+
+  Detected before `RCDATE` at K = 25, by recall type (severity-weighted / raw count):
+
+  | Recalls | n | Weighted | Raw count |
+  |---|---|---|---|
+  | All | 4,656 | 6.2% | 6.1% |
+  | Vehicle has ≥ 1 earlier complaint in a matching cell | 1,505 | 19.2% | 18.8% |
+  | Influenced by an ODI investigation | 285 | **36.1%** | 34.0% |
+  | First recall on the cell in two years | 3,365 | 3.8% | 3.7% |
+  | Follows another recall on the cell within two years | 1,291 | 12.6% | 12.2% |
+
+  With a larger budget, raw count reaches 9.3% of all recalls (42.8% of ODI recalls)
+  at K = 50. At K = 10 it has the best precision, 11.6% against a 6.6% random pick
+  (1.8× lift); disproportionality gets 9.1% against 7.8% (1.2×).
+
+What this says, and what it does not:
+
+- **The ceiling is the data, not the detector.** 1,740 test recalls (37%) cover no
+  vehicle with an eligible complaint (trailers, RVs, buses, heavy trucks, low-volume
+  makes), and only 1,505 (32%) have even one earlier complaint in a matching cell.
+  Most recalls come from manufacturer testing and warranty data that complaints do
+  not see.
+- **Complaint-driven recalls are detectable.** About a third of ODI-influenced recalls
+  alert before `RCDATE`, with a median lead of about seven months (213–228 days). Part of that lead may
+  follow a public ODI investigation that itself drew complaints; investigation open
+  dates are not loaded, so this is not separated yet.
+- **Disproportionality does not beat raw counts.** Normalizing by vehicle volume
+  surfaces anomalies on low-volume vehicles, but recalls concentrate on high-volume
+  ones, so ranking by volume gives more precision. Severity weighting changes little.
+  The detector is kept as the default because it is the dev-set winner and its
+  rankings are more interpretable for an investigator; a hybrid is an open item.
+- **Precision is a lower bound.** A true defect that ends in a service bulletin, an
+  investigation that closes, or a recall outside the 365-day horizon counts as a
+  false alarm.
+- **Residual leakage risks.** The hazard classifier was trained on LLM labels sampled
+  from all years, so its notion of each hazard saw later complaints (but no recall
+  data). Make and model names were rewritten to current values in 2021 on both sides.
+  The campaign-number filter is conservative: it also drops complaints that quote an
+  older, unrelated recall. Recall labels are LLM output, not human-reviewed.
+- **Matching leniency.** Large campaigns span many vehicles and up to two hazards, so
+  they offer more cells to match; every detector gets the same leniency, so the
+  comparison stays fair, but absolute recall is somewhat optimistic for those campaigns.
+
+**Next:** LangGraph investigation agents that read a signal's complaints and cite them →
+eval harness and LLMOps.
 
 ## Quickstart
 
@@ -86,6 +173,14 @@ uv run precursor gold export                # review data/review/gold_review.csv
 uv run precursor gold import && uv run precursor gold score
 ```
 
+Phase 3:
+
+```bash
+uv run precursor label-recalls                  # LLM hazard labels for vehicle recalls since 2018 (~20 min)
+uv run precursor signals --as-of 2024-06-02 -k 15
+uv run precursor backtest                       # tune on 2019-2020, report 2021-2025
+```
+
 Set `OLLAMA_URL` or `PRECURSOR_LABEL_MODEL` to use another Ollama server or model.
 
 Postgres listens on `127.0.0.1:5433`. Override with `DATABASE_URL`.
@@ -103,6 +198,9 @@ These choices matter for the validity of the backtest, so they are recorded here
 | `available_at = greatest(LDATE, DATEA)` | This is the first day a complaint was public. All as-of queries filter on it. |
 | Recall label date = `RCDATE` (Part 573 report received) | This is the earliest public date of a recall. |
 | Driver name, city, VIN prefix and dealer contact details are not loaded | They are not needed, and they are personal data. |
+| Signals use the narrative hazard, not the component field | NHTSA rewrote component labels retroactively in 2021. |
+| Complaints quoting a campaign number are excluded from signals | They were written after that recall; the filter is applied to every as-of query. |
+| Tune on 2019–2020, report 2021–2025 | Headline numbers come from years no parameter was chosen on. |
 
 ### Known leakage risks (to handle in the backtest)
 
@@ -130,6 +228,7 @@ src/precursor/
   classify.py  distillation, held-out evaluation, corpus scoring
   ner.py       GLiNER inference, fine-tuning, span metrics
   gold.py      human gold-label sheet and scoring
+  signals.py   vehicle x hazard detector, weekly triage simulation, backtest
   cli.py       `precursor` command
 tests/         parser unit tests + DB integration tests (throwaway precursor_test database)
 ```
@@ -142,6 +241,10 @@ tests/         parser unit tests + DB integration tests (throwaway precursor_tes
   affected (`pytest` uses `pythonpath = ["src"]`). For the CLI, use a non-editable
   install: `uv run --no-editable precursor ...` or `export UV_NO_EDITABLE=1`. The
   package is rebuilt automatically when `src/` changes.
+- **`DiskFull: could not resize shared memory segment`.** Docker gives containers a
+  64 MB `/dev/shm`, too small for parallel joins over the whole corpus. The compose
+  file sets `shm_size: 512mb`; recreate the container with `docker compose up -d`
+  (data lives in the volume).
 - **`CERTIFICATE_VERIFY_FAILED`** is handled: downloads use the `certifi` CA bundle.
 - **Training or embedding crawls, or Postgres restarts, on a 16 GB Mac.** Apple-silicon
   GPU memory is shared with the Docker VM. GLiNER fine-tuning at batch size 8 used

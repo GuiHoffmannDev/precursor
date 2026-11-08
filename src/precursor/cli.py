@@ -31,6 +31,12 @@ def main(argv: list[str] | None = None) -> int:
     lab.add_argument("--n", type=int, default=100, help="complaints to label")
     lab.add_argument("--workers", type=int, default=8, help="concurrent LLM requests")
 
+    labr = sub.add_parser("label-recalls", help="LLM hazard labels for vehicle recall campaigns")
+    labr.add_argument("--since", type=date.fromisoformat, default=date(2018, 1, 1),
+                      help="only campaigns reported on or after this date")
+    labr.add_argument("--limit", type=int, help="stop after this many campaigns")
+    labr.add_argument("--workers", type=int, default=8, help="concurrent LLM requests")
+
     cls = sub.add_parser("classify", help="distill LLM labels into classifiers and report metrics")
     cls.add_argument("--report", type=Path, default=Path("reports/classifier.json"))
     cls.add_argument("--score", action="store_true", help="also score every embedded complaint")
@@ -51,6 +57,13 @@ def main(argv: list[str] | None = None) -> int:
     gold.add_argument("action", choices=["export", "import", "score"])
     gold.add_argument("--path", type=Path, default=Path("data/review/gold_review.csv"))
     gold.add_argument("--n", type=int, default=200, help="rows to export")
+
+    sig = sub.add_parser("signals", help="top vehicle x hazard signals as of a date")
+    sig.add_argument("--as-of", type=date.fromisoformat, required=True)
+    sig.add_argument("-k", type=int, default=25)
+
+    bt = sub.add_parser("backtest", help="tune on 2019-2020, report recall detection on 2021-2025")
+    bt.add_argument("--report", type=Path, default=Path("reports/backtest.json"))
 
     find = sub.add_parser("search", help="BM25 search over complaint narratives")
     find.add_argument("query")
@@ -114,6 +127,34 @@ def main(argv: list[str] | None = None) -> int:
             start = time.monotonic()
             stats = label.label_sample(conn, args.n, workers=args.workers)
             print(f"{stats} with {label.MODEL} ({label.PROMPT_VERSION}) in {time.monotonic() - start:.0f}s")
+        elif args.command == "signals":
+            from precursor import signals
+
+            print(f"{'make':<14}{'model':<22}{'year':<6}{'hazard':<26}{'n':>5}{'expected':>10}{'score':>8}")
+            for r in signals.signals(conn, args.as_of, k=args.k):
+                exp = "" if r["expected"] is None else f"{r['expected']:.1f}"
+                print(f"{r['make'][:13]:<14}{r['model'][:21]:<22}{r['model_year']:<6}{r['hazard']:<26}"
+                      f"{r['complaints']:>5}{exp:>10}{r['score']:>8.1f}")
+        elif args.command == "backtest":
+            import json
+
+            from precursor import signals
+
+            start = time.monotonic()
+            report = signals.backtest(conn, progress=lambda m: print(m, flush=True))
+            args.report.parent.mkdir(parents=True, exist_ok=True)
+            args.report.write_text(json.dumps(report, indent=2) + "\n")
+            for name, sel in report["selected"].items():
+                t = sel["test"][str(signals.HEADLINE_BUDGET)]
+                print(name, sel["detector"], "test K=25:", t["recalls"], "precision", t["precision"],
+                      "base rate", sel["test_base_rate"])
+            print(f"wrote {args.report} in {time.monotonic() - start:.0f}s")
+        elif args.command == "label-recalls":
+            from precursor import label
+
+            start = time.monotonic()
+            stats = label.label_recalls(conn, since=args.since.isoformat(), limit=args.limit, workers=args.workers)
+            print(f"{stats} with {label.MODEL} ({label.RECALL_PROMPT_VERSION}) in {time.monotonic() - start:.0f}s")
         else:
             for r in search(conn, args.query, as_of=args.as_of, k=args.k):
                 print(f"[{r['score']:.2f}] {r['odino']} {r['available_at']} | {r['vehicles']} | {r['components']}")
