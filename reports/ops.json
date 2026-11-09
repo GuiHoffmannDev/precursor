@@ -1,0 +1,433 @@
+{
+  "pricing": {
+    "usd_per_1k_prompt": 0.0001,
+    "usd_per_1k_completion": 0.0004,
+    "note": "USD per 1k tokens; illustrative unless set to a real provider price"
+  },
+  "runs": 174,
+  "groups": {
+    "adhoc@investigate-v1": {
+      "tag": "adhoc",
+      "prompt_version": "investigate-v1",
+      "llm": "gemma4:31b-cloud",
+      "runs": 4,
+      "ok": 4,
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "recommendations": {
+        "escalate": 4
+      },
+      "latency_s": {
+        "p50": 22.0,
+        "p95": 22.6,
+        "max": 22.7
+      },
+      "tokens_per_run": {
+        "p50": 25212.5,
+        "p95": 35839.4,
+        "mean_prompt": 26267.5,
+        "mean_completion": 1879.75
+      },
+      "tokens_total": {
+        "prompt": 105070,
+        "completion": 7519
+      },
+      "mean_llm_calls": 4.75,
+      "mean_tool_calls": 1.5,
+      "llm_nodes": {
+        "agent": {
+          "calls": 7,
+          "mean_prompt_tokens": 6144.57,
+          "mean_completion_tokens": 257.43,
+          "latency_p50_s": 1.7
+        },
+        "critic": {
+          "calls": 6,
+          "mean_prompt_tokens": 2977.0,
+          "mean_completion_tokens": 313.17,
+          "latency_p50_s": 1.3
+        },
+        "report": {
+          "calls": 6,
+          "mean_prompt_tokens": 7366.0,
+          "mean_completion_tokens": 639.67,
+          "latency_p50_s": 2.7
+        }
+      },
+      "llm_parse_errors": 0,
+      "tool_mix": {
+        "search_complaints": 6
+      },
+      "tool_errors": 0,
+      "first_draft": {
+        "claims": 23,
+        "cited": 61,
+        "citation_rejection_rate": 0.0,
+        "critic_rejection_rate": 0.087,
+        "critic_errors": 0
+      },
+      "revised_runs": 2,
+      "downgraded_escalations": 0,
+      "mean_claims_kept": 5.25,
+      "mean_claims_dropped": 0.25,
+      "cost_usd": {
+        "total": 0.0135,
+        "per_run": 0.003379
+      }
+    },
+    "eval-live:investigate-v1@investigate-v1": {
+      "tag": "eval-live:investigate-v1",
+      "prompt_version": "investigate-v1",
+      "llm": "gemma4:31b-cloud",
+      "runs": 10,
+      "ok": 10,
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "recommendations": {
+        "escalate": 5,
+        "dismiss": 3,
+        "monitor": 2
+      },
+      "latency_s": {
+        "p50": 10.3,
+        "p95": 40.4,
+        "max": 52.2
+      },
+      "tokens_per_run": {
+        "p50": 22945.0,
+        "p95": 31258.3,
+        "mean_prompt": 21716.3,
+        "mean_completion": 1391.2
+      },
+      "tokens_total": {
+        "prompt": 217163,
+        "completion": 13912
+      },
+      "mean_llm_calls": 4.4,
+      "mean_tool_calls": 2.0,
+      "llm_nodes": {
+        "agent": {
+          "calls": 20,
+          "mean_prompt_tokens": 5270.65,
+          "mean_completion_tokens": 204.15,
+          "latency_p50_s": 1.0
+        },
+        "critic": {
+          "calls": 12,
+          "mean_prompt_tokens": 2112.75,
+          "mean_completion_tokens": 293.83,
+          "latency_p50_s": 1.3
+        },
+        "report": {
+          "calls": 12,
+          "mean_prompt_tokens": 7199.75,
+          "mean_completion_tokens": 525.25,
+          "latency_p50_s": 2.1
+        }
+      },
+      "llm_parse_errors": 0,
+      "tool_mix": {
+        "search_complaints": 20
+      },
+      "tool_errors": 0,
+      "first_draft": {
+        "claims": 46,
+        "cited": 76,
+        "citation_rejection_rate": 0.0,
+        "critic_rejection_rate": 0.0435,
+        "critic_errors": 0
+      },
+      "revised_runs": 2,
+      "downgraded_escalations": 0,
+      "mean_claims_kept": 4.6,
+      "mean_claims_dropped": 0.0,
+      "cost_usd": {
+        "total": 0.0273,
+        "per_run": 0.002728
+      }
+    },
+    "triage-dev:agent@investigate-v1": {
+      "tag": "triage-dev:agent",
+      "prompt_version": "investigate-v1",
+      "llm": "gemma4:31b-cloud",
+      "runs": 80,
+      "ok": 80,
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "recommendations": {
+        "escalate": 63,
+        "dismiss": 15,
+        "monitor": 2
+      },
+      "latency_s": {
+        "p50": 9.8,
+        "p95": 20.4,
+        "max": 25.9
+      },
+      "tokens_per_run": {
+        "p50": 23063.5,
+        "p95": 42115.4,
+        "mean_prompt": 23860.33,
+        "mean_completion": 1704.58
+      },
+      "tokens_total": {
+        "prompt": 1908826,
+        "completion": 136366
+      },
+      "mean_llm_calls": 4.56,
+      "mean_tool_calls": 2.0,
+      "llm_nodes": {
+        "agent": {
+          "calls": 162,
+          "mean_prompt_tokens": 5379.31,
+          "mean_completion_tokens": 218.2,
+          "latency_p50_s": 1.7
+        },
+        "critic": {
+          "calls": 101,
+          "mean_prompt_tokens": 2882.28,
+          "mean_completion_tokens": 368.27,
+          "latency_p50_s": 1.9
+        },
+        "report": {
+          "calls": 102,
+          "mean_prompt_tokens": 7316.34,
+          "mean_completion_tokens": 625.71,
+          "latency_p50_s": 2.8
+        }
+      },
+      "llm_parse_errors": 1,
+      "tool_mix": {
+        "search_complaints": 158,
+        "read_complaints": 1,
+        "similar_complaints": 1
+      },
+      "tool_errors": 0,
+      "first_draft": {
+        "claims": 429,
+        "cited": 865,
+        "citation_rejection_rate": 0.0023,
+        "critic_rejection_rate": 0.0583,
+        "critic_errors": 0
+      },
+      "revised_runs": 21,
+      "downgraded_escalations": 0,
+      "mean_claims_kept": 5.22,
+      "mean_claims_dropped": 0.01,
+      "cost_usd": {
+        "total": 0.2454,
+        "per_run": 0.003068
+      }
+    },
+    "triage-dev:no_tools@investigate-v1": {
+      "tag": "triage-dev:no_tools",
+      "prompt_version": "investigate-v1",
+      "llm": "gemma4:31b-cloud",
+      "runs": 80,
+      "ok": 80,
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "recommendations": {
+        "escalate": 55,
+        "dismiss": 14,
+        "monitor": 11
+      },
+      "latency_s": {
+        "p50": 4.6,
+        "p95": 9.8,
+        "max": 19.1
+      },
+      "tokens_per_run": {
+        "p50": 6428.0,
+        "p95": 14545.5,
+        "mean_prompt": 6872.26,
+        "mean_completion": 861.84
+      },
+      "tokens_total": {
+        "prompt": 549781,
+        "completion": 68947
+      },
+      "mean_llm_calls": 2.26,
+      "mean_tool_calls": 0.0,
+      "llm_nodes": {
+        "critic": {
+          "calls": 88,
+          "mean_prompt_tokens": 1654.22,
+          "mean_completion_tokens": 263.64,
+          "latency_p50_s": 1.7
+        },
+        "report": {
+          "calls": 93,
+          "mean_prompt_tokens": 4346.34,
+          "mean_completion_tokens": 491.9,
+          "latency_p50_s": 2.6
+        }
+      },
+      "llm_parse_errors": 5,
+      "tool_mix": {},
+      "tool_errors": 0,
+      "first_draft": {
+        "claims": 333,
+        "cited": 430,
+        "citation_rejection_rate": 0.0047,
+        "critic_rejection_rate": 0.024,
+        "critic_errors": 0
+      },
+      "revised_runs": 8,
+      "downgraded_escalations": 0,
+      "mean_claims_kept": 4.12,
+      "mean_claims_dropped": 0.0,
+      "cost_usd": {
+        "total": 0.0826,
+        "per_run": 0.001032
+      }
+    }
+  },
+  "prompt_versions": {
+    "investigate-v1": {
+      "runs": 174,
+      "ok": 174,
+      "invalid": 0,
+      "invalid_rate": 0.0,
+      "recommendations": {
+        "escalate": 127,
+        "dismiss": 32,
+        "monitor": 15
+      },
+      "latency_s": {
+        "p50": 8.1,
+        "p95": 20.8,
+        "max": 52.2
+      },
+      "tokens_per_run": {
+        "p50": 18514.0,
+        "p95": 37822.6,
+        "mean_prompt": 15981.84,
+        "mean_completion": 1303.13
+      },
+      "tokens_total": {
+        "prompt": 2780840,
+        "completion": 226744
+      },
+      "mean_llm_calls": 3.5,
+      "mean_tool_calls": 1.07,
+      "llm_nodes": {
+        "agent": {
+          "calls": 189,
+          "mean_prompt_tokens": 5396.16,
+          "mean_completion_tokens": 218.17,
+          "latency_p50_s": 1.7
+        },
+        "critic": {
+          "calls": 207,
+          "mean_prompt_tokens": 2318.34,
+          "mean_completion_tokens": 317.87,
+          "latency_p50_s": 1.7
+        },
+        "report": {
+          "calls": 213,
+          "mean_prompt_tokens": 6014.41,
+          "mean_completion_tokens": 562.02,
+          "latency_p50_s": 2.6
+        }
+      },
+      "llm_parse_errors": 6,
+      "tool_mix": {
+        "search_complaints": 184,
+        "read_complaints": 1,
+        "similar_complaints": 1
+      },
+      "tool_errors": 0,
+      "first_draft": {
+        "claims": 831,
+        "cited": 1432,
+        "citation_rejection_rate": 0.0028,
+        "critic_rejection_rate": 0.0445,
+        "critic_errors": 0
+      },
+      "revised_runs": 33,
+      "downgraded_escalations": 0,
+      "mean_claims_kept": 4.68,
+      "mean_claims_dropped": 0.01,
+      "cost_usd": {
+        "total": 0.3688,
+        "per_run": 0.002119
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "baseline": "triage-dev:agent",
+      "candidate": "triage-dev:no_tools",
+      "matched_cells": 80,
+      "recommendation_agreement": 0.775,
+      "confusion": {
+        "dismiss": {
+          "monitor": 5,
+          "dismiss": 9,
+          "escalate": 1
+        },
+        "escalate": {
+          "escalate": 53,
+          "dismiss": 4,
+          "monitor": 6
+        },
+        "monitor": {
+          "escalate": 1,
+          "dismiss": 1
+        }
+      },
+      "baseline_metrics": {
+        "invalid_rate": 0.0,
+        "escalate_rate": 0.7875,
+        "tokens_p50": 23063.5,
+        "latency_p50_s": 9.8,
+        "mean_llm_calls": 4.56,
+        "mean_tool_calls": 2.0
+      },
+      "candidate_metrics": {
+        "invalid_rate": 0.0,
+        "escalate_rate": 0.6875,
+        "tokens_p50": 6428.0,
+        "latency_p50_s": 4.6,
+        "mean_llm_calls": 2.26,
+        "mean_tool_calls": 0.0
+      }
+    },
+    {
+      "baseline": "triage-dev:agent",
+      "candidate": "eval-live:investigate-v1",
+      "matched_cells": 10,
+      "recommendation_agreement": 0.8,
+      "confusion": {
+        "dismiss": {
+          "monitor": 1,
+          "dismiss": 3
+        },
+        "escalate": {
+          "escalate": 4
+        },
+        "monitor": {
+          "monitor": 1,
+          "escalate": 1
+        }
+      },
+      "baseline_metrics": {
+        "invalid_rate": 0.0,
+        "escalate_rate": 0.4,
+        "tokens_p50": 21737.5,
+        "latency_p50_s": 8.8,
+        "mean_llm_calls": 4.2,
+        "mean_tool_calls": 2.1
+      },
+      "candidate_metrics": {
+        "invalid_rate": 0.0,
+        "escalate_rate": 0.5,
+        "tokens_p50": 22945.0,
+        "latency_p50_s": 10.3,
+        "mean_llm_calls": 4.4,
+        "mean_tool_calls": 2.0
+      }
+    }
+  ]
+}

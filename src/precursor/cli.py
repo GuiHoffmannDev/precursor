@@ -6,6 +6,7 @@ from datetime import date
 from pathlib import Path
 
 from precursor import db, nhtsa
+from precursor.ops import Pricing
 from precursor.load import load_complaints, load_recalls
 from precursor.search import search
 
@@ -82,6 +83,18 @@ def main(argv: list[str] | None = None) -> int:
     tri.add_argument("--workers", type=int, default=4, help="concurrent investigations")
     tri.add_argument("--seed", default="triage-v1")
     tri.add_argument("--report", type=Path, default=Path("reports/triage.json"))
+
+    ops = sub.add_parser("ops-report", help="trace analytics and cost of stored investigations")
+    ops.add_argument("--report", type=Path, default=Path("reports/ops.json"))
+    ops.add_argument("--usd-per-1k-prompt", type=float, default=Pricing.usd_per_1k_prompt)
+    ops.add_argument("--usd-per-1k-completion", type=float, default=Pricing.usd_per_1k_completion)
+    ops.add_argument("--compare", nargs=2, action="append", default=[], metavar=("BASELINE", "CANDIDATE"),
+                     help="compare two run sets on shared cells; each is TAG or TAG@PROMPT_VERSION (repeatable)")
+
+    frz = sub.add_parser("eval-freeze", help="freeze a small regression eval set from stored triage runs")
+    frz.add_argument("--triage-report", type=Path, default=Path("reports/triage.json"))
+    frz.add_argument("--per-stratum", type=int, default=2, help="cases per (recommendation, hit) stratum")
+    frz.add_argument("--output", type=Path, default=Path("tests/fixtures/eval_set.json"))
 
     find = sub.add_parser("search", help="BM25 search over complaint narratives")
     find.add_argument("query")
@@ -179,6 +192,20 @@ def main(argv: list[str] | None = None) -> int:
             args.report.write_text(json.dumps(report, indent=2, default=str) + "\n")
             print(json.dumps({k: report[k] for k in ("sample", "arms", "detector_score")}, indent=2, default=str))
             print(f"wrote {args.report}")
+        elif args.command == "ops-report":
+            return _ops_report(conn, args)
+        elif args.command == "eval-freeze":
+            import json
+
+            from precursor import evals
+
+            if args.per_stratum < 1:
+                print("--per-stratum must be 1 or more", file=sys.stderr)
+                return 2
+            data = evals.freeze(conn, json.loads(args.triage_report.read_text()), per_stratum=args.per_stratum)
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(json.dumps(data, indent=1, default=str) + "\n")
+            print(f"wrote {len(data['cases'])} cases to {args.output}")
         elif args.command == "label-recalls":
             from precursor import label
 
@@ -231,6 +258,37 @@ def _investigate(conn, args) -> int:
         args.markdown.write_text(row["markdown"])
     print(f"stored investigation {row['id']} ({row['status']})")
     return 0 if row["status"] == "ok" else 1
+
+
+def _ops_report(conn, args) -> int:
+    import json
+
+    from precursor import ops
+
+    if args.usd_per_1k_prompt < 0 or args.usd_per_1k_completion < 0:
+        print("prices must not be negative", file=sys.stderr)
+        return 2
+    pricing = ops.Pricing(args.usd_per_1k_prompt, args.usd_per_1k_completion)
+    try:
+        report = ops.report(ops.load_runs(conn), pricing, [tuple(c) for c in args.compare])
+    except ValueError as e:
+        print(e, file=sys.stderr)
+        return 2
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    args.report.write_text(json.dumps(report, indent=2) + "\n")
+    print(f"{'group':<44}{'runs':>5}{'invalid':>8}{'p50 s':>7}{'p95 s':>7}{'tok p50':>9}"
+          f"{'cite rej':>9}{'critic rej':>11}{'$/run':>10}")
+    for name, g in report["groups"].items():
+        fd = g["first_draft"]
+        print(f"{name[:43]:<44}{g['runs']:>5}{g['invalid_rate']:>8.1%}{g['latency_s']['p50']:>7.1f}"
+              f"{g['latency_s']['p95']:>7.1f}{g['tokens_per_run']['p50']:>9.0f}"
+              f"{fd['citation_rejection_rate'] or 0:>9.1%}{fd['critic_rejection_rate'] or 0:>11.1%}"
+              f"{g['cost_usd']['per_run']:>10.5f}")
+    for c in report["comparisons"]:
+        print(f"{c['baseline']} vs {c['candidate']}: {c['matched_cells']} cells, "
+              f"agreement {c['recommendation_agreement']:.0%}, regressions: {ops.regressions(c) or 'none'}")
+    print(f"wrote {args.report}")
+    return 0
 
 
 def _embed(conn, limit: int | None, labeled_only: bool) -> None:

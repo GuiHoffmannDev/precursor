@@ -29,6 +29,9 @@ build-backend = "hatchling.build"
 testpaths = ["tests"]
 # Import from src directly so tests do not depend on the editable-install .pth file.
 pythonpath = ["src"]
+# The live regression eval calls the real LLM; run it with `pytest -m live`.
+markers = ["live: re-runs the real LLM against the full database (opt-in)"]
+addopts = "-m 'not live'"
 
 [tool.uv]
 # Rebuild the package when sources change, so non-editable installs

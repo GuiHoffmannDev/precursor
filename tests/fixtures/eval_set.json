@@ -1,0 +1,2061 @@
+{
+ "version": "eval-v1",
+ "source_tag": "triage-dev:agent",
+ "per_stratum": 2,
+ "strata": {
+  "dismiss/miss": 2,
+  "dismiss/hit": 2,
+  "escalate/miss": 2,
+  "escalate/hit": 2,
+  "monitor/miss": 2
+ },
+ "cases": [
+  {
+   "id": 7,
+   "hit": false,
+   "signal": {
+    "as_of": "2019-02-17",
+    "make": "FORD",
+    "model": "MUSTANG",
+    "model_year": 2015,
+    "hazard": "airbag_or_restraint",
+    "window_weeks": 13,
+    "complaints": 3,
+    "expected": 0.7,
+    "score": 4.04
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "monitor",
+    "confidence": "medium",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 19113,
+    "completion_tokens": 940,
+    "latency_ms": 9194
+   },
+   "report": {
+    "notes": [],
+    "trend": "unclear",
+    "claims": [
+     {
+      "text": "Airbags failed to deploy during collisions in two separate incidents.",
+      "odinos": [
+       "11179754",
+       "11165280"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The driver's seatbelt failed to lock during a rear-end impact.",
+      "odinos": [
+       "11180439"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Restraint failures occurred during crashes resulting in injuries.",
+      "odinos": [
+       "11179754",
+       "11165280"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "airbag_or_restraint",
+    "summary": "Three complaints for the 2015 model year report restraint system failures during crashes, including non-deployment of airbags and failure of the seatbelt to lock. These incidents resulted in injuries and significant vehicle damage. The failures are distinct from previous Takata recalls which focused on inflator ruptures rather than non-deployment.",
+    "severity": "injury",
+    "rationale": "The evidence is severe but thin and inconsistent. The complaints describe different failure modes (non-deployment vs. seatbelt locking failure), making it difficult to identify a single specific defect for engineering review at this time. However, the severity of the incidents warrants continued monitoring.",
+    "confidence": "medium",
+    "failure_mode": "non-deployment of airbags and seatbelt locking failure",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 3,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "monitor",
+    "llm_recommendation": "monitor",
+    "affected_model_years": [
+     2015
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "11165280",
+     "available_at": "2019-01-04",
+     "crash": true,
+     "fire": false,
+     "injured": 2,
+     "deaths": 0,
+     "model_years": [
+      2015
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "TAKATA RECALL. I WAS INVOLVED IN A CAR ACCIDENT ON THE FREEWAY. A TRAILER TRUCK TURNED INTO MY DRIVER SIDE REAR WHEEL DESTROYING IT AND PUSHING ME TOWARDS THE FRONT OF HIS TRUCK. TO PREVENT ENDING UP IN FRONT OF THE TRUCK I TURNED THE WHEEL TO MY RIGHT CAUSING ME TO CRASH INTO A CONSTRUCTION BARRIER AT 30MPH. MY FRONT RIGHT TIRE TOOK ALL THE IMPACT CAUSING MY CAR TO GO UP ABOUT 3-4 FEET AND SLAMMING DOWN HARD. MY AIRBAGS NEVER DEPLOYED."
+    },
+    {
+     "odino": "11179754",
+     "available_at": "2019-02-13",
+     "crash": true,
+     "fire": false,
+     "injured": 2,
+     "deaths": 0,
+     "model_years": [
+      2015
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "WE WERE STOPPED IN FAST LANE IN FREEWAY TRAFFIC, CAR IN CENTER LANE HIT BACK PASSENGER SIDE, PUSHING US INTO TAHOE IN FRONT OF US.  DRIVER THAT HIT US WAS GOING 30-35 MPH ON IMPACT.  ONLY THE DRIVERS LEG AIRBAG WENT OFF, PASSENGER AIRBAG POPPED COVER OFF ON RIGHT SIDE AND GOT STUCK SO DID NOT DEPLOY.  DRIVERS FRONT STEERING WHEEL AIRBAG DID NOT DEPLOY. DRIVER INJURED WITH SEVERE BRUISING.  BACK WINDSHIELD SHATTERED IN TINY PIECES ACROSS ENTIRE INSIDE OF CAR. I HAVE CONFIRMED THIS CAR DID NOT HAV"
+    },
+    {
+     "odino": "11180439",
+     "available_at": "2019-02-16",
+     "crash": true,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2015
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "I WAS IMPACTED BY A TRUCK FROM BACK. I'M THE DRIVER MY SEAT AND SEATBELT DIDNT WORK. I WAS PUSHED TOWARDS FRONT STEERING WHEEL AND SLAMMED TO THE BACK. MY BACK REST WAS IN MY BACK SEAT. MY SEAT BELT NEVER LOCKED. I COULDN'T REACH ANY PEDDLE AFTER IMPACT"
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "hit": false,
+   "signal": {
+    "as_of": "2019-05-05",
+    "make": "JEEP",
+    "model": "GRAND CHEROKEE",
+    "model_year": 2019,
+    "hazard": "braking_failure",
+    "window_weeks": 13,
+    "complaints": 3,
+    "expected": 0.85,
+    "score": 2.74
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "dismiss",
+    "confidence": "high",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 18243,
+    "completion_tokens": 876,
+    "latency_ms": 6218
+   },
+   "report": {
+    "notes": [],
+    "trend": "unclear",
+    "claims": [
+     {
+      "text": "One 2019 vehicle experienced a total brake failure to engage during a sudden stop, resulting in a rear-end collision.",
+      "odinos": [
+       "11204418"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "One 2019 vehicle reported the brake pedal gradually sinking to the floor over several weeks, reducing stopping confidence.",
+      "odinos": [
+       "11204533"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "One 2019 vehicle reported low voltage issues and a parking brake that would not turn off.",
+      "odinos": [
+       "11187361"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "braking_failure",
+    "summary": "Three complaints were identified for the 2019 model year regarding braking issues, but they describe unrelated failure modes. These include a sudden failure to engage leading to a crash, a gradual increase in pedal travel to the floor, and an electrical issue affecting the parking brake.",
+    "severity": "incident",
+    "rationale": "The complaints for the 2019 model year are too few and describe completely different failure modes (sudden failure, soft pedal, and electrical/parking brake), indicating no consistent defect for an engineer to review.",
+    "confidence": "high",
+    "failure_mode": "no consistent failure mode",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 3,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "dismiss",
+    "llm_recommendation": "dismiss",
+    "affected_model_years": [
+     2019
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "11187361",
+     "available_at": "2019-03-17",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2019
+     ],
+     "hazard": "braking_failure",
+     "narrative": "CONTINUALLY GETTING LOW VOLTAGE ISSUES DESPITE HAVING IT \"FIXED\" AT THE DEALER. PARKING BRAKE WON'T TURN OFF."
+    },
+    {
+     "odino": "11204418",
+     "available_at": "2019-04-29",
+     "crash": true,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2019
+     ],
+     "hazard": "braking_failure",
+     "narrative": "TL* THE CONTACT LEASES A 2019 JEEP GRAND CHEROKEE. WHILE THE CONTACT WAS ACCELERATING FROM A STOP, THE PRECEDING VEHICLE STOPPED SUDDENLY. THE CONTACT DEPRESSED THE BRAKE PEDAL, BUT THE BRAKES FAILED TO ENGAGE. AS A RESULT, THE CONTACT REAR ENDED THE PRECEDING VEHICLE. A POLICE REPORT WAS FILED AND THERE WERE NO INJURIES. THE CONTACT TOOK THE VEHICLE TO BAYSIDE CHRYSLER JEEP DODGE (212-19 NORTHERN BOULEVARD, BAYSIDE, NEW YORK 11361, 718-229-8700) WHERE IT WAS DETERMINED THAT THE BRAKES PERFORMED"
+    },
+    {
+     "odino": "11204533",
+     "available_at": "2019-04-29",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2019
+     ],
+     "hazard": "braking_failure",
+     "narrative": "WE LEASED A NEW 2019 JEEP GRAND CHEROKEE LTD ON FEBRUARY 1, 2019.  AROUND THE BEGINNING OF APRIL WE NOTICED THAT THE BRAKE PEDAL HAD TO BE DEPRESSED FURTHER THAN WHEN IT WAS NEW TO STOP THE VEHICLE. EACH WEEK IT WAS GETTING WORSE TO THE POINT WHERE NOW IT GOES ALL THE WAY TO THE FLOOR AND DOES NOT STOP WITH CONFIDENCE. WE HAVE STOPPED DRIVING IT BEFORE IT FAILS COMPLETELY. WAITING FOR SERVICE APPOINTMENT WITH THE DEALER."
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "hit": true,
+   "signal": {
+    "as_of": "2019-05-12",
+    "make": "BMW",
+    "model": "X3",
+    "model_year": 2019,
+    "hazard": "structural_or_detachment",
+    "window_weeks": 13,
+    "complaints": 3,
+    "expected": 1.11,
+    "score": 3.0
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "escalate",
+    "confidence": "high",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 20484,
+    "completion_tokens": 1205,
+    "latency_ms": 6776
+   },
+   "report": {
+    "notes": [],
+    "trend": "rising",
+    "claims": [
+     {
+      "text": "The liftgate or tailgate opened spontaneously while the vehicle was being driven at various speeds.",
+      "odinos": [
+       "11181661",
+       "11202802",
+       "11205853"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "One instance of spontaneous opening occurred at approximately 60 mph on a highway, making the vehicle hard to control.",
+      "odinos": [
+       "11181661"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Spontaneous opening of the tailgate resulted in contents falling out of the vehicle while driving up a hill.",
+      "odinos": [
+       "11202802"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The liftgate has also been reported to open on its own while the vehicle was parked and locked.",
+      "odinos": [
+       "11181661",
+       "11203708"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The reported failures are concentrated in the 2019 model year.",
+      "odinos": [
+       "11181661",
+       "11202802",
+       "11205853",
+       "11203708"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "structural_or_detachment",
+    "summary": "Multiple reports indicate that the liftgate/tailgate of the 2019 [VEHICLE] opens spontaneously while the vehicle is in motion. This has occurred at highway speeds and resulted in cargo falling onto the roadway. No existing recalls address this specific failure mode.",
+    "severity": "incident",
+    "rationale": "There is a consistent failure mode of the liftgate opening spontaneously during vehicle operation, which creates a significant safety risk to the driver and other road users. This is not covered by any of the provided recalls.",
+    "confidence": "high",
+    "failure_mode": "spontaneous opening of the liftgate/tailgate while driving",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 5,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "escalate",
+    "llm_recommendation": "escalate",
+    "affected_model_years": [
+     2019
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "11181661",
+     "available_at": "2019-02-21",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2019
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "THE TAILGATE OPENED BY ITSELF WHILE I WAS DRIVING ON THE HIGHWAY.     I HAD A SHORT LOCAL DRIVING BEFORE ENTERING THE HIGHWAY. ABOUT 5 MINS IN THE HIGHWAY AT  AROUND 60 MPH, THE TAILGATE OPENED BY ITSELF. THE CAR FELT VERY NOISY AND HARD TO CONTROL (I WAS ON A WINDY HIGHWAY).     I HAD TO EXIST THE HIGHWAY, STOP ON A LOCAL STREET, AND CLOSE THE TRUNK.     THE SAME RANDOM OPENING ALSO HAPPENED ONCE IN MY GARAGE WHILE THE CAR WAS PARKED AND LOCKED, A WEEK AGO.    WITH TWO RANDOM OPENING HAPPENED I"
+    },
+    {
+     "odino": "11202802",
+     "available_at": "2019-04-22",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2019
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "WHEN SLOWLY DRIVING UP A HILL, THE TAILGATE OPENED AND THE CONTENTS IN THE BACK FELL OUT."
+    },
+    {
+     "odino": "11203708",
+     "available_at": "2019-04-25",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2019
+     ],
+     "hazard": "other_safety",
+     "narrative": "THE TAILGATE OPENS ON ITS OWN. THIS HAPPENS WITHOUT THE KEY FOB BEING NEAR A PERSON OR ANYTHING PRESSING ON IT. THIS IS A SERIOUS SAFETY ISSUE AND BMW DEALERS WILL NOT FIX IT, IF THEY DO NOT SEE IT IN PERSON. SO, FAR THIS HAS OCCURRED SEVERAL TIMES WHILE THE VEHICLE WAS PARKED IN A DRIVEWAY OR IN A PARKING LOT."
+    },
+    {
+     "odino": "11205853",
+     "available_at": "2019-05-06",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2019
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "TL* THE CONTACT OWNS A 2019 BMW X3. WHILE DRIVING VARIOUS SPEEDS, THE LIFTGATE SPONTANEOUSLY OPENED. ADDITIONALLY, WHEN THE PUSH TO START WAS ENGAGED, THE VEHICLE FAILED TO SHUT OFF.  THERE WERE NO WARNING INDICATORS ILLUMINATED. THE VEHICLE WAS TAKEN TO JACKIE COOPER BMW MINI (14145 N BROADWAY EXT, EDMOND, OK 73013, (405) 755-3600), BUT THE CAUSE OF THE FAILURES COULD NOT BE DETERMINED. THE VEHICLE WAS NOT REPAIRED. THE MANUFACTURER WAS NOT CONTACTED. THE FAILURE MILEAGE WAS 100. *BF   CONSUMER"
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "hit": false,
+   "signal": {
+    "as_of": "2019-09-29",
+    "make": "FORD",
+    "model": "F-350 SD",
+    "model_year": 2016,
+    "hazard": "loss_of_steering",
+    "window_weeks": 13,
+    "complaints": 4,
+    "expected": 1.67,
+    "score": 2.77
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "escalate",
+    "confidence": "high",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 23619,
+    "completion_tokens": 1661,
+    "latency_ms": 11371
+   },
+   "report": {
+    "notes": [],
+    "trend": "rising",
+    "claims": [
+     {
+      "text": "Vehicles experience violent shaking of the steering wheel and front end, referred to as 'death wobble', typically at speeds between 45 and 75 mph.",
+      "odinos": [
+       "11256543",
+       "11254268",
+       "11219629",
+       "11192101"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The oscillation is frequently triggered by hitting a bump, pothole, or expansion joint while driving straight.",
+      "odinos": [
+       "11254268",
+       "11186091",
+       "11164689",
+       "11052225"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Drivers must apply brakes and reduce speed significantly (often below 40 mph) to stop the shaking and regain control.",
+      "odinos": [
+       "11256543",
+       "11254268",
+       "11219115",
+       "11163124"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The defect has been diagnosed as worn track bar ball joints and bushings.",
+      "odinos": [
+       "11254268",
+       "10671655"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Replacing the steering stabilizer shock is reported as an ineffective fix for the underlying problem.",
+      "odinos": [
+       "11254268",
+       "11219115",
+       "11062668"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The issue has caused near-loss of vehicle control and dangerous situations on highways.",
+      "odinos": [
+       "11243322",
+       "11186091",
+       "11052225"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The problem is reported across multiple model years, including 2015, 2016, and 2017.",
+      "odinos": [
+       "11062668",
+       "11256543",
+       "11219629"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "loss_of_steering",
+    "summary": "Multiple consumers report a violent front-end oscillation known as 'death wobble' occurring at highway speeds, often triggered by road bumps. The condition causes severe steering instability and requires significant deceleration to regain control. Evidence suggests the issue is linked to worn track bar ball joints and bushings.",
+    "severity": "incident",
+    "rationale": "There is a consistent, specific failure mode (death wobble) with high safety severity (near-loss of control at highway speeds) and a suspected root cause (track bar ball joints). This is not addressed by any existing recalls.",
+    "confidence": "high",
+    "failure_mode": "Violent steering and front-end oscillation ('death wobble') triggered by road bumps at highway speeds, linked to track bar ball joint/bushing wear.",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 7,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "escalate",
+    "llm_recommendation": "escalate",
+    "affected_model_years": [
+     2015,
+     2016,
+     2017
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "10671655",
+     "available_at": "2015-01-11",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2009
+     ],
+     "hazard": "tire_or_wheel",
+     "narrative": "HIT ROAD BUMP & THE 'DEATH WOBBLE' OCCURRED CAUSING THE TRUCK TO SHAKE UNCONTROLLABLY & FORCE US TO THE SIDE OF THE ROAD.  I TOOK IT TO FORD DEALERSHIP & THEY QUOTED ME OVER $7K TO FIX VIRTUALLY EVERYTHING SUSPENSION RELATED.  I TOOK IT 2 LOCAL DIESEL MECHANICS WHO EVENTUALLY FIXED IT AFTER REPLACING APX $700 IN PARTS.  THE PART THAT FIXED IT WAS THE TRACK BAR BALL JOINT & TRACK BAR BUSHING.  IN SEARCHING ONLINE AMONGST FORD ENTHUSIAST AS WELL AS OTHER DIESEL TRUCK OWNERS....THIS IS A SCARY, DAN"
+    },
+    {
+     "odino": "11052225",
+     "available_at": "2017-12-04",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "tire_or_wheel",
+     "narrative": "DEATH WOBBLE- VIOLENT FRONT WHEELS WOBBLING, STEERING SHAKING SO VIOLENT CAN'T CONTROL.  DIFFERENT ROADS, MPH-45,60,65,70.  TO BRING UNDER CONTROL MUST BRAKE AND TRY TO GET OFF ROAD & GET BELOW 20MPH.  EXTREME SAFETY ISSUE.  DEATH WOBBLE HAS HAPPENED ON ALL TYPES OF ROADS, USUALLY STARTS WITH AN EXPANSION JOINT, POT HOLE OR BUMP IN ROAD."
+    },
+    {
+     "odino": "11062668",
+     "available_at": "2018-01-14",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2015
+     ],
+     "hazard": "tire_or_wheel",
+     "narrative": "MY 2015 IS EXPERIENCING THE DEATH WOBBLE! IT'S WHEN THE PICKUP STARTS SHAKING VIOLENTLY AND YOU CAN'T HANG ON TO THE STEERING WHEEL! WITH THAT BEING SAID I HAVE PUT ON NEW SHOCKS, REPLACED THE TRACK BAR, NEW STEERING STABILIZER SHOCK, NEW SHOCKS, GOING TO GET A THIRD ALIGNMENT, AND NEW TIRES AND STILL HAVE THE DEATH WOBBLE! THE REST OF THE FRONT END IS IN GOOD SHAPE! I'M JUST ASKING FOR SOME HELP FROM FORD! THANK YOU!"
+    },
+    {
+     "odino": "11163124",
+     "available_at": "2018-12-22",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "STEERING WOBBLE (SOME CALL IT DEATH WOBBLE) ON CARTOON BUMPS IT APPEARS T INDUCE A UNCONTROLLABLE WO BUE IN FRONT WHEEL STEERING.  WHEELS WILL ISOLATE FAST AND VIOLENTLY UNTIL VEHICLE SLOWS.  MY VEHICLE SO FAR HAPPENS INT HE 55 TO 60 MPH RANGE AND COASTING WITHOUT USING BRAKES IT WILL DISCONTINUE BEFORE 40MPH. I NOTICE ON THE HIGHWAY THAT I HA E EXPERIA CEDAR THIS (3 TIMES SO FAR) THAT SEVERAL OF THE TYPICAL CROSS RIDGES CAUSED BY GROUND HEAVE OR FREEZING WILL MAKE STEERING WHEEL SHALE LIKE 3 TI"
+    },
+    {
+     "odino": "11164689",
+     "available_at": "2019-01-02",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "DRIVING AT APPROXIMATELY 45MPH OR GREATER, THE VEHICLES FRONT TWO WHEELS AND STEERING WHEEL WILL WOBBLE OR OSCILLATE RAPIDLY AFTER HITTING A POT HOLE OR EXPANSION JOINT. THE WOBBLING JARS THE STEERING WHEEL AND MAKES THE VEHICLE HARD TO CONTROL. BREAKS MUST BE APPLIED AND SPEED REDUCED BY 5 TO 20 MPH TO STOP THE WOBBLE."
+    },
+    {
+     "odino": "11186091",
+     "available_at": "2019-03-12",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "I EXPERIENCED \"DEATH WOBBLE\" WHILE DRIVING APPROXIMATELY 65 MPH ON INTERSTATE 35 IN NORTHERN IL ON 3-9-19. THIS STARTED AFTER I RAN OVER A MINOR ROAD BUMP. THE STEERING WHEEL BEGAN TO SHAKE VIOLENTLY. I ALMOST LOST CONTROL BUT WAS ABLE TO REDUCE SPEED WHICH STOPPED THE VIBRATION AND PULL OVER TO THE SIDE OF THE ROAD. THIS DID HAPPEN AGAIN ON 3-10-19 WHILE DRIVING APPROXIMATELY 45 MPH. I HAVE AN APPOINTMENT WITH MY FORD'S SERVICE DEPARTMENT ON 3-13-19."
+    },
+    {
+     "odino": "11192101",
+     "available_at": "2019-03-28",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "FORD DEATH WOBBLE - AT RANDOM TIMES WHILE DRIVING AT HIGHWAY SPEEDS (45-75MPH) SEVERE STEERING AND FRONT SUSPENSION SHAKES CAUSING LOSS OF CONTROL OF VEHICLE. TO GAIN CONTROL DRIVER MUST BRAKE HEAVILY AND REDUCE SPEED."
+    },
+    {
+     "odino": "11219115",
+     "available_at": "2019-06-10",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "TRUCK HAS DEATH WOBBLE.  AFTER HITTING A BUMP ON THE FREEWAY STEERING WHEEL AND FRONT END STARTS TO SHAKE VIOLENTLY.  REQUIRES SLOWING DOWN TO UNDER 40 MPH TO STOP SHAKING.  VERY DANGEROUS SITUATION.  THIS HAS HAPPENED NUMEROUS TIMES.  FORD HAS INSPECTED THE FRONT END AND SAID EVERYTHING LOOKS FINE.  ANOTHER FORD DEALER REPLACE THE STEERING STABILIZER SHOCK AT MY COST.  PROBLEM STILL EXISTS."
+    },
+    {
+     "odino": "11219629",
+     "available_at": "2019-06-12",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "MULTIPLE INSTANCES ~15 OF 'DEATH WOBBLE' WHERE THE TRUCK AND STEERING WHEEL SHAKE VIOLENTLY. NORMALLY AT SPEEDS ABOVE 55 MPH WHEN HITTING A BUMP OR ROUGH ROAD. STARTED OCCURRING ONLY WHEN TURNING AND HITTING A BUMP, BUT NOW HAPPENING WHEN DRIVING STRAIGHT. REQUIRES SLOWING QUICKLY TO BELOW 30 MPH TO STOP SHAKING, MAKING IT VERY DANGEROUS FOR MYSELF AND OTHER DRIVERS ON THE HIGHWAY. STOCK F350 DRW WITH 32K MILES"
+    },
+    {
+     "odino": "11243322",
+     "available_at": "2019-08-12",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2016
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "MY 2016 F 350 HAS THE DEATH WOBBLE TOOK IT TO DEALERSHIP THEY REPAIRED THE ALIGNMENT STABILIZER ARM AND LET ME GO AND GOT ON THE INTERSTATE10 HEADED TO HOUSTON GOT SPEED UP 75 MPH AND HIT BUMP AND ALMOST LOST CONTROL OF THE TRUCK,18 WHEELER ALMOST RUN ME OVER; IT SCARED SO BAD I HAVE A PACEMAKER I THOUGHT I WAS HAVING A HEART ATTACK!!"
+    },
+    {
+     "odino": "11253538",
+     "available_at": "2019-09-06",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2016
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "FORD CALLS IT A DEATH WOBBLE THEY SAY IT'S A COMMON PROBLEM. SAD WHEN DEALERSHIP TELLS YOU THAT. STEERING STABILIZER SEVERAL OTHER PARTS WILL NEED TO BE BOUGHT TO REPAIR THIS PROBLEM. WOBBLE OUT OF CONTROL ON THE HIGHWAY CAN'T UNDERSTAND HOW THEY CAN HAVE SUCH UNSAFE PARTS THAT COULD KILL SEVERAL PEOPLE. SAD!"
+    },
+    {
+     "odino": "11254268",
+     "available_at": "2019-09-09",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2016
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "WHILE TRAVELING FREEWAY SPEED, HITTING A BUMP ON THE ROAD CAUSES AN UNCONTROLLABLE SHAKE IN THE FRONT END AND CAUSES THE TRUCK TO GO TOWARDS THE LEFT, THAT ONLY GOES AWAY AFTER HITTING THE BRAKES AND SLOWING DOWN 10-15 MPH.  A REPRESENTATIVE FROM FORD CALLS IT THE \"DEATH WOBBLE.\"  I HAD THE TRUCK INTO FORD BEFORE THE WARRANTY EXPIRED AND THEY REPLACED A STEERING STABILIZER SHOCK, BUT THE PROBLEM NEVER WENT AWAY TOTALLY.  FORD CONFIRMED THE PROBLEM, AND DIAGNOSED IT AS TRACK BAR BALL JOINT WORN, "
+    },
+    {
+     "odino": "11256543",
+     "available_at": "2019-09-18",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2016
+     ],
+     "hazard": "loss_of_steering",
+     "narrative": "I WAS DRIVING THE VEHICLE STRAIGHT AT ABOUT 60 MPH ON A HIGHWAY WHEN THE VEHICLE START TO SHAKE ROUGHLY IN AN OSCILLATING STYLE, APPARENTLY KNOWN AS THE \"DEATH WOBBLE\". MAINTAINING CONTROL OF THE VEHICLE WAS EXTREMELY DIFFICULT AND REQUIRED A CONSIDERABLE AMOUNT OF FORCE TO KEEP THE VEHICLE STRAIGHT AND NOT CRASHING INTO OTHER CARS OR HIGHWAY WALLS. THE ONLY WAY TO STOP THIS WAS TO SLAM ON THE BRAKES AND BRING THE VEHICLE TO A COMPLETE STOP ON A HIGHWAY."
+    }
+   ]
+  },
+  {
+   "id": 36,
+   "hit": true,
+   "signal": {
+    "as_of": "2020-01-12",
+    "make": "MERCEDES-BENZ",
+    "model": "C300",
+    "model_year": 2012,
+    "hazard": "airbag_or_restraint",
+    "window_weeks": 13,
+    "complaints": 5,
+    "expected": 0.37,
+    "score": 4.35
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "dismiss",
+    "confidence": "high",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 20626,
+    "completion_tokens": 1160,
+    "latency_ms": 8065
+   },
+   "report": {
+    "notes": [],
+    "trend": "rising",
+    "claims": [
+     {
+      "text": "Consumers report that dealerships are unable to replace defective Takata airbags due to part unavailability.",
+      "odinos": [
+       "11290430",
+       "11288112",
+       "11287042",
+       "11082525",
+       "11043178"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Owners express safety concerns and fear of fatality because the known airbag recall has not been repaired.",
+      "odinos": [
+       "11287831",
+       "11287042",
+       "11066718"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "One owner reported receiving airbag warning lights for both driver and passenger sides, which they associated with the unresolved recall.",
+      "odinos": [
+       "11281502"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Part availability issues for the Takata recall are reported across multiple model years, including 2010, 2011, and 2012.",
+      "odinos": [
+       "11288112",
+       "11066718",
+       "11043178",
+       "10947504"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "airbag_or_restraint",
+    "summary": "The recent spike in complaints for the 2012 [VEHICLE] is driven by consumer frustration regarding the lack of replacement parts for existing Takata airbag recalls. There is no evidence of a new failure mode; rather, owners are reporting that dealerships cannot perform the mandated safety repairs.",
+    "severity": "potential",
+    "rationale": "The complaints do not describe a new defect but rather the failure to execute existing recalls (19V010000, 17V017000). The issue is a matter of remedy availability for a known hazard already covered by previous recall campaigns.",
+    "confidence": "high",
+    "failure_mode": "Lack of remedy parts for existing Takata airbag recalls",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 4,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "dismiss",
+    "llm_recommendation": "dismiss",
+    "affected_model_years": [
+     2010,
+     2011,
+     2012
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "10947504",
+     "available_at": "2017-01-25",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2010
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "TAKATA FRONTAL AIRBAG AND ANOTHER DEFECTIVE PART THAT I HAD RECEIVED AN ALERT ABOUT OVER A YEAR AGO, BUT TILL TODAY'S DATE HAS NOT BEEN REMEDIED. AS PART IS NOT AVAILABLE."
+    },
+    {
+     "odino": "11043178",
+     "available_at": "2017-11-04",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2010
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "TAKATA RECALL, NOTHING HAS HAPPENED TO THE VEHICLE AS YET, BUT CONTACTED THE DEALER TO GET AIRBAG REPLACED AND THEY ARE SAYING THEY DON'T HAVE THE PARTS AVAILABLE TO FIX THE AIRBAG AND WE WILL BE NOTIFIED WHEN THEY ARE AVAILABLE.   I FEEL THIS IS A SAFETY RISK AND DON'T UNDERSTAND WHY THE PARTS AREN'T AVAILABLE TO FIX SOMETHING THAT COULD CAUSE INJURY OR DEATH. THANK YOU"
+    },
+    {
+     "odino": "11066718",
+     "available_at": "2018-02-02",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2011
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "TAKATA AIRBAG RECALL - THE RECALL LETTER THAT I RECEIVED JANUARY 31, 2018 STATES THAT THE PART TO REPAIR THE CAR WILL NOT BE AVAILABLE UNTIL SEPTEMBER 2018 FOR THE DRIVER SIDE AIR BAG AND SEPTEMBER 2019 FOR THE PASSENGER SIDE AIR BAG.  I DON'T WANT MY WIFE DRIVING THIS CAR UNTIL THE FIX/REPAIR IS DONE.  TWO YEARS IS A LONG TIME TO WAIT FOR PARTS.  WE WANT A LOANER VEHICLE PROVIDED BY THE MANUFACTURER."
+    },
+    {
+     "odino": "11082525",
+     "available_at": "2018-04-02",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2011
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "\"TAKATA RECALL\"   I CONTACT A MERCEDEZ BENZ DEALER MANY TIMES IN ORDER TO HAVE THE DRIVERS SIDE  AIR BAG REPLACE AND THEY ALWAYS RESPOND THAT THE PART IS NOT YET AVAILABLE AND THAT THEY DO NOT KNOW WHEN IS GOING TO BE AVAILABLE. I'M REALLY CONCERN THAT IN CASE OF AN ACCIDENT I CAN BE INJURY BY THE DEFECTIVE AIRBAG INSTALLED IN MY VEHICLE. PLEASE LET ME KNOW HOW TO PROCEED TO HAVE THIS DEFECTIVE AIRBAG REPLACE AS SOON POSSIBLE."
+    },
+    {
+     "odino": "11281502",
+     "available_at": "2019-11-21",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2012
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "UPON STARTING THE VEHICLE I RECEIVE AIRBAG WARNINGS. ONE FOR THE DRIVER SIDE AND ANOTHER ONE FOR THE PASSENGER SIDE. I CAN CLICK ON \"OK\" TO CLEAR THEM OUT BUT WITH THE AIRBAG RECALL AND NO RESOLUTION I AM FEARFUL OF A MALFUNCTION. I HAD MY CAR TO THE MERCEDES DEALER TWO TIMES AND WAS TOLD THEY WOULD NEED TO INVESTIGATE IT, AT MY EXPENSE, WHICH COULD BE ANYWHERE BETWEEN $500-$4500 DEPENDING ON WHAT THEY FIND. WITH A SAFETY ISSUE AT RISK I THINK THE RESPONSIBILITY IS ON MERCEDES TO INVESTIGATE AND"
+    },
+    {
+     "odino": "11287042",
+     "available_at": "2019-12-05",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2012
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "MY PASSENGER SIDE BAG IS A TAKATA. I DRIVE FAMILY MEMBERS IN MY CAR AND I AM WORRIED FOR THEIR SAFETY. MERCEDES BENZ TELLS ME THEY DON'T HAVE A REPLACEMENT AIR BAG FOR ME.  I MADE A COMMITMENT TO KEEP THIS CAR UNTIL IT NO LONGER RUNS AND I AM AFRAID TO DRIVE IT AND MORE IMPORTANTLY I FEEL THAT MANUFACTURERS SHOULD STAND BEHIND THEIR PRODUCT."
+    },
+    {
+     "odino": "11287831",
+     "available_at": "2019-12-09",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2012
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "AIR BAG RECALL NOT REPAIRED AND CAN RESULT IN FATALITY"
+    },
+    {
+     "odino": "11288112",
+     "available_at": "2019-12-10",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2012
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "MY VEHICLE WAS RECALLED FOR THE TAKATA AIRBAGS AND I HAVE BEEN TOLD BY MBZUSA IT WILL BE OVER A YEAR BEFORE THEY HAVE THE PARTS AVAILABLE TO FIX. TOTALLY UNACCEPTABLE."
+    },
+    {
+     "odino": "11290430",
+     "available_at": "2019-12-20",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2012
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "CANNOT GET LOCAL DEALER TO REPLACE DEFECTIVE PASSENGER SIDE AIRBAG.  KEEP GETTING A RUN AROUND ON PART AVAILABILITY ."
+    }
+   ]
+  },
+  {
+   "id": 50,
+   "hit": false,
+   "signal": {
+    "as_of": "2020-04-19",
+    "make": "NISSAN",
+    "model": "ROGUE",
+    "model_year": 2017,
+    "hazard": "structural_or_detachment",
+    "window_weeks": 13,
+    "complaints": 7,
+    "expected": 2.51,
+    "score": 2.36
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "monitor",
+    "confidence": "high",
+    "llm_calls": 6,
+    "tool_calls": 3,
+    "prompt_tokens": 33796,
+    "completion_tokens": 1993,
+    "latency_ms": 10342
+   },
+   "report": {
+    "notes": [],
+    "trend": "unclear",
+    "claims": [
+     {
+      "text": "The panoramic sunroof has spontaneously shattered or exploded while driving in the 2017 model and other years.",
+      "odinos": [
+       "11321271",
+       "11310360",
+       "11299982",
+       "11097942",
+       "11192808"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The rear hatch has experienced electrical latch failures and strut failures in the 2017 model.",
+      "odinos": [
+       "11301157",
+       "11307794",
+       "11318767"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Complaints report interior instability, including a back seat that shakes as if not bolted down and severe cabin vibrations at idle.",
+      "odinos": [
+       "11321163",
+       "11319929"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "A 2017 vehicle required replacement of inner tie rods at approximately 62,000 miles.",
+      "odinos": [
+       "11320033"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "structural_or_detachment",
+    "summary": "The signal for the 2017 [VEHICLE] consists of unrelated complaints including sunroof shattering, rear hatch malfunctions, and interior vibrations. While the panoramic sunroof exhibits a consistent failure mode across multiple model years, the 2017-specific signal is fragmented.",
+    "severity": "potential",
+    "rationale": "The 2017 signal is a mix of unrelated issues. However, the panoramic sunroof shattering is a consistent, severe failure mode appearing across multiple model years (2014-2020) that warrants continued monitoring.",
+    "confidence": "high",
+    "failure_mode": "multiple unrelated failures (sunroof shattering, hatch latch/strut failure, seat instability)",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 5,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 1
+     },
+     {
+      "round": 2,
+      "claims": 4,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "monitor",
+    "llm_recommendation": "monitor",
+    "affected_model_years": [
+     2017
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "11097942",
+     "available_at": "2018-05-25",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "WHILE DRIVING ON THE HIGHWAY, THE MAIN MOVING GLASS OF THE PANORAMIC SUNROOF SHATTERED. THIS HAPPENED WHILE THE CLOSEST CAR IN FRONT OF ME WAS ~1/4 OF A MILE."
+    },
+    {
+     "odino": "11192808",
+     "available_at": "2019-03-31",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "WHILE DRIVING ON I-5 ON A CLEAR SUNNY DAY THE PANORAMIC SUN ROOF EXPLODED FOR NO APPARENT REASON."
+    },
+    {
+     "odino": "11299982",
+     "available_at": "2020-01-16",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2018
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "AS I WAS DRIVING TO WORK, THE STATIONARY PORTION OF THE PANORAMIC SUNROOF SUDDENLY EXPLODED AND SHATTERED. IT SOUNDED LIKE A GUNSHOT AND THERE WAS A HOLE IN THE CENTER OF THE SUNROOF.  I WAS NOT NEAR ANY OTHER VEHICLES AND NOTHING STRUCK THE CAR.  IT SPONTANEOUSLY EXPLODED.  THIS PROBLEM SHOULD BE FIXED BEFORE SOMEONE IS HURT."
+    },
+    {
+     "odino": "11301157",
+     "available_at": "2020-01-22",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "ELECTRICAL REAR HATCH LATCH MECHANISM FAILED UNDER 55K MI CREATING A LOCKED INOPERABLE DOOR ELIMINATING A POTENTIAL EGRESS IN THE EVENT OF A COLLISION."
+    },
+    {
+     "odino": "11307794",
+     "available_at": "2020-02-07",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "BOTH TAILGATE STRUTS NEED TO BE REPLACED ON A 2017 ROGUE I BOUGHT NEW.  SINGLE SAFE 64 YEAR OLD DRIVER.  VERY EXPENSIVE TO REPLACE ON SUCH A NEW CAR BOUGHT BECAUSE OF NISSAN REPUTATION"
+    },
+    {
+     "odino": "11310360",
+     "available_at": "2020-02-20",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2016
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "WHILE DRIVING PANORAMIC SUNROOF EXPLODED WITHOUT CAUSE.  I WAS DRIVING ON 1604 2/14/2020 AT APPROX 4:30 PM IN RUSH HOUR TRAFFIC ON SMOOTH SURFACE WHEN THE SUNROOF BURST.  NO DEBRIS WAS SEEN AND JUST WHAT SOUNDED LIKE A SHOTGUN BLAST.  PULLED OVER TO DISCOVER THE SUNROOF HAD BURST UPWARD AND OUTWARD."
+    },
+    {
+     "odino": "11318767",
+     "available_at": "2020-03-20",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "THE REAR LIFT GATE AUTOMATIC OPEN FUNCTION HAS STOPPED WORKING. I HAVE HAD THE VEHICLE FOR TWO YEARS AND THE GATE NO LONGER OPENS WITH THE FOB OR WHEN YOU KICK UNDER THE VEHICLE."
+    },
+    {
+     "odino": "11319929",
+     "available_at": "2020-04-01",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "THE NISSAN HAS A SEVERE VIBRATION COMING THROUGHOUT THE CABIN AT STOPLIGHTS ON CITY STREETS. THE STEERING WHEEL VIBRATES, THE PASSENGER VIOLENTLY VIBRATES WHEN NO ONE IS SITTING IN THE SEAT, THE HOOD SHAKES. THIS ALL HAPPENS WHILE AT IDLE, AS THE VEHICLE GETS WARMER THE ISSUES BECOMES WORSE, FOR EXAMPLE: THE VIBRATION IS LESS NOTICEABLE THE FIRST 10 MINUTES THE VEHICLE IS ON AND OPERATING, AS THE ENGINE WARMS THE ISSUE GETS WORSE. I HAVE HAD THE CAR INSPECTED BY BOTH NISSAN AND A 3-RD PARTY, WIT"
+    },
+    {
+     "odino": "11320033",
+     "available_at": "2020-04-02",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "2017 NISSAN ROGUE WITH ONLY 62674 MILES NEEDED INNER TIE RODS REPLACED 4/1/2020  TIE RODS WERE ONLY AVAILABLE AS PART OF THE ENTIRE STEERING RACK ASSEMBLY AT A COST OF $1450 FROM NISSAN DEALERSHIP.  WAS TOLD NO HELP WAS AVAILABLE FOR THE COST SINCE IT WAS OUTSIDE OF THE MANUFACTURER WARRANTY  LEARNED THAT MANY OF THE SAME PART HAVE BEEN REPLACED LOCALLY  SOUNDED EXCESSIVE FOR AGE OF VEHICLE AND THE CRITICAL NATURE OF THE STEERING COMPONENTS"
+    },
+    {
+     "odino": "11321163",
+     "available_at": "2020-04-15",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "AT HIGH SPEEDS THE BACK SEAT MAKES NOISE AND SHAKES AS IF UTS NOT BOLTED DOWN CORRECTLY.  SPEEDS OVER 50 IS WHEN IT'S MOSTLY NOTICED.  IT ALSO HAPPENS SOMETIMES WHEN THE CAR IS IDLING."
+    },
+    {
+     "odino": "11321271",
+     "available_at": "2020-04-15",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2017
+     ],
+     "hazard": "structural_or_detachment",
+     "narrative": "PANORAMIC SUNROOF EXPLODED AND SHATTERED TRAVELING DOWN A UNOCCUPIED COUNTY ROAD. ROAD WAS CLEAR, NO TREES, TRAFFIC, ON SUNNY DAY. REPORTED TO NISSAN USA WITH \"ITS GLASS\" ANSWER. CAR WAS BOUGHT NEW, NEVER WRECKED, UNDER COVER WHEN NOT DRIVEN. DRIVEN AROUND 50MPH.  *TR"
+    }
+   ]
+  },
+  {
+   "id": 51,
+   "hit": false,
+   "signal": {
+    "as_of": "2020-05-31",
+    "make": "HYUNDAI",
+    "model": "SONATA",
+    "model_year": 2013,
+    "hazard": "unintended_acceleration",
+    "window_weeks": 13,
+    "complaints": 3,
+    "expected": 2.19,
+    "score": 1.61
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "dismiss",
+    "confidence": "high",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 19641,
+    "completion_tokens": 1009,
+    "latency_ms": 6952
+   },
+   "report": {
+    "notes": [],
+    "trend": "unclear",
+    "claims": [
+     {
+      "text": "One 2013 vehicle experienced sudden acceleration from 35 to 65 mph, resulting in a crash and injury.",
+      "odinos": [
+       "11325591"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "A 2013 vehicle experienced independent brake engagement and a stall caused by internal engine failure.",
+      "odinos": [
+       "11320964"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "A 2013 vehicle reported a total engine failure after a recall was completed.",
+      "odinos": [
+       "11323762"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Other model years report unrelated acceleration issues, including pedal interference (2013) and throttle body failure (2010).",
+      "odinos": [
+       "11018845",
+       "11122742"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "unintended_acceleration",
+    "summary": "The investigation examined a signal of unintended acceleration for the 2013 [VEHICLE]. The complaints are inconsistent, with one reporting sudden acceleration, one reporting independent brake engagement followed by engine failure, and one reporting a general engine blowout.",
+    "severity": "injury",
+    "rationale": "The complaints for the 2013 model year are unrelated and do not describe a consistent failure mode. One is a severe acceleration event, while the others are engine failures. Broader data shows a mix of unrelated causes for acceleration issues across different years.",
+    "confidence": "high",
+    "failure_mode": "none",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 4,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "dismiss",
+    "llm_recommendation": "dismiss",
+    "affected_model_years": [
+     2013
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "11018845",
+     "available_at": "2017-08-22",
+     "crash": true,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2013
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "THE BRAKE PEDAL AND ACCELERATOR PEDAL ARE SO CLOSE TOGETHER AS TO INTERFERE WITH EACH OTHER.  SPECIFICALLY, AS ONE COMES TO A STOP, THE BRAKE PEDAL IS SO CLOSE TO THE ACCELERATOR BOTH LATERALLY AND VERTICALLY, THAT THE OPERATORS FOOT MAY HIT BOTH PEDALS AT THE SAME TIME JUST BEFORE  COMING TO A STOP, CAUSING AN UNINTENDED SUDDEN ACCELERATION.  THIS IS A SIGNIFICANT SAFETY ISSUE FOR THE DRIVER, OCCUPANTS, PEDESTRIANS AND OTHER VEHICLES OR ITEMS IN THE PATH OF THE CAR.  I HAVE HAS 4 SUCH INCIDENTS"
+    },
+    {
+     "odino": "11122742",
+     "available_at": "2018-08-27",
+     "crash": true,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2010
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "CAR HAD UNSOLICITED ACCELERATION WHEN BACKING UP. CAR WENT FLYING BACK IN FULL ACCELERATION.  HIT RAILING/STAIRS.I PUT CAR IN PARK. THOUGHT I MUST HAVE HIT ACCELERATION BY MISTAKE SO I WENT TO PUT CAR IN DRIVE TO PULL INTO PARKING SPACE, WHEN I TOOK FOR OF BRAKE THE CAR CAREENED OUT OF CONTROL FULL ACCELERATION. I TRIED BRAKE FOOT PRESSING PEDAL DOWN CAR WOULDN'T STOP. I STEERED INTO LOW CEMENT PARKING SPACE BUMPER AND BUSHES TO STOP CAR. - 1024.00 TO REPLACE THROTTLE BODY THAT HYUNDAI CHECKED O"
+    },
+    {
+     "odino": "11320964",
+     "available_at": "2020-04-13",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2013
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "TL* THE CONTACT OWNS A 2013 HYUNDAI SONATA. THE CONTACT STATED THAT WHILE DRIVING AT APPROXIMATELY 75 MPH, THE BRAKES ENGAGED INDEPENDENTLY CAUSING THE VEHICLE TO JERK INTO ANOTHER LANE. THE CONTACT MENTIONED THAT THERE WAS AN ABNORMAL NOISE AND THE VEHICLE STALLED. THE VEHICLE WAS TAKEN TO FIVE STAR HYUNDAI OF WARNER ROBINS (650 RUSSELL PKWY, WARNER ROBINS, GA 31088) WHERE IT WAS DIAGNOSED THAT THERE WAS AN INTERNAL ENGINE FAILURE. THE VEHICLE WAS NOT REPAIRED. THE MANUFACTURER WAS NOT NOTIFIED"
+    },
+    {
+     "odino": "11323762",
+     "available_at": "2020-05-07",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2013
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "MY ENGINE BLEW OUT AFTER THE RECALL WAS SAID TO BE COMPLETE.  *TR"
+    },
+    {
+     "odino": "11325591",
+     "available_at": "2020-05-22",
+     "crash": true,
+     "fire": false,
+     "injured": 1,
+     "deaths": 0,
+     "model_years": [
+      2013
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "FEBURARY 28 2019 COMING HOME FROM MY MOTHERS BIRTHDAY DINNER MY 2013 HYUNDAI SONATA ACCELERATED ON IT'S OWN. THE VEHICLE WENT FROM 35MPH TO 65MPH IN A FEW SECONDS. BETWEEN THE RAIN AND SUDDEN ACCELERATION THE VEHICLE LOST TRACTION. I TRIED THE BRAKES, EMERGENCY BRAKE AND TRIED TO PUT THE CAR IN NEUTRAL AND FAILED.I WAS ABLE TO KEEP THE VEHICLE FROM GOING OFF THE SIDE OF THE MOUNTAIN WITH MY 5 YEAR OLD DAUGHTER. I WAS ABLE TO DRIFT INTO A ROCK WALL INSTEAD. WE HIT AT APPROXIMATELY 40 TO 45 MPH. M"
+    }
+   ]
+  },
+  {
+   "id": 61,
+   "hit": true,
+   "signal": {
+    "as_of": "2020-06-28",
+    "make": "RAM",
+    "model": "1500",
+    "model_year": 2020,
+    "hazard": "unintended_acceleration",
+    "window_weeks": 13,
+    "complaints": 3,
+    "expected": 0.87,
+    "score": 2.69
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "escalate",
+    "confidence": "high",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 21156,
+    "completion_tokens": 1428,
+    "latency_ms": 10021
+   },
+   "report": {
+    "notes": [],
+    "trend": "stable",
+    "claims": [
+     {
+      "text": "2020 EcoDiesel vehicles exhibit a delay of several seconds between pressing the accelerator and the vehicle responding, often during turns or merging.",
+      "odinos": [
+       "11330143",
+       "11321383",
+       "11321168",
+       "11316534"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The delay is often followed by a sudden burst of power or surge in acceleration.",
+      "odinos": [
+       "11321383",
+       "11321168",
+       "11286675",
+       "11269900"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Owners of 2014-2016 EcoDiesel models report that this throttle lag appeared specifically after an EPA-mandated emissions software update (AEM V08).",
+      "odinos": [
+       "11242653",
+       "11241883",
+       "11222079",
+       "11228334",
+       "11242261"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The condition is reported to be more prevalent or severe when the engine is cold.",
+      "odinos": [
+       "11298389",
+       "11254867",
+       "11286675"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The lag creates a safety hazard when attempting to cross traffic or merge into lanes.",
+      "odinos": [
+       "11321168",
+       "11316534",
+       "11242653",
+       "11254867"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "loss_of_propulsion",
+    "summary": "Multiple consumers report a dangerous delay in throttle response in EcoDiesel vehicles, where the engine fails to accelerate for several seconds before suddenly surging. This issue is reported across several model years and is specifically linked by some users to emissions software updates. The hazard is misclassified as unintended acceleration but is actually a loss of propulsion/acceleration lag.",
+    "severity": "potential",
+    "rationale": "There is a consistent, specific failure mode (throttle lag) across multiple model years of the EcoDiesel engine that creates a significant safety risk during critical driving maneuvers. This is not covered by any existing recalls.",
+    "confidence": "high",
+    "failure_mode": "Significant throttle response lag/delay followed by sudden acceleration in EcoDiesel engines.",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 5,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "escalate",
+    "llm_recommendation": "escalate",
+    "affected_model_years": [
+     2014,
+     2015,
+     2016,
+     2020
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "11222079",
+     "available_at": "2019-06-24",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2016
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "FCA ECODIESEL EMISSIONS RECALL - AEM SOFTWARE UPDATE WAS PERFORMED ON MY 2016 RAM ECODIESEL (JUNE 3, 2019) BY SERVICING DEALER.  SOFTWARE UPDATE WAS NOT SUPPOSED TO IMPACT VEHICLE PERFORMANCE, DRIVABILITY, FUEL ECONOMY, ETC.  THIS IS NOT THE CASE AS ALL INDICATED CHARACTERISTICS HAVE BEEN NEGATIVELY AFFECTED BY THIS UPDATE.  MOST CONCERNING IS THE AEM RECALL SOFTWARE UPDATE HAS INDUCED A SIGNIFICANT THROTTLE RESPONSE DELAY WHEN TRYING TO ACCELERATE FROM A STOP OR AT LOW SPEEDS UNTIL THE ENGINE R"
+    },
+    {
+     "odino": "11228334",
+     "available_at": "2019-06-29",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2016
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "AFTER RECEIVING THE V08 ECODIESEL EMISSIONS UPDATE, THE VEHICLE PERFORMANCE HAS SUFFERED SIGNIFICANTLY!    THE ACCELERATION DELAY/LAG IS TRULY A LIFE-SAFETY ISSUE AND WILL CAUSE A LIFE-THREATENING ACCIDENT.   IN ADDITION TO THE SIGNIFICANT DELAYS IN ACCELERATION (ESPECIALLY WHEN \"COLD\" AND WHEN MERGING ONTO TRAFFIC), THE TRANSMISSION SHIFTS HAVE BEEN ALTERED TO BE UNRESPONSIVE AND SIGNIFICANTLY HINDER PERFORMANCE.   THE VEHICLE IS DANGEROUSLY UNSAFE WITH THE CURRENT RECALL UPDATE!!"
+    },
+    {
+     "odino": "11241883",
+     "available_at": "2019-08-05",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2015
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "RAM ECODIESEL AEM V08 FLASH: AFTER HAVING THIS FLASH PERFORMED ON MY 2015 RAM ECODIESEL AT A RAM DEALERSHIP AS PART OF THE SETTLEMENT WITH THE EPA, THERE IS A 3+ SECOND DELAY IN ACCELERATION FROM A STOP  WHICH HAS CREATED A HAZARDOUS SITUATION WHEN AT INTERSECTIONS.  ALSO, THERE IS A HESITATION  WHEN TRYING TO MERGE IN FREEWAY TRAFFIC. THIS TURBO CHARGER LAG WAS NEVER AN ISSUE BEFORE THIS FLASH WAS PERFORMED ON MY TRUCK."
+    },
+    {
+     "odino": "11242261",
+     "available_at": "2019-08-07",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2015
+     ],
+     "hazard": "loss_of_propulsion",
+     "narrative": "RE: 2015 RAM 1500 PICKUP WITH 3.0 ECODIESEL ENGINE AND AUTOMATIC TRANSMISSION    FOLLOWING THE V08 EMISSIONS RECALL, DRIVABILITY HAS BEEN SERIOUSLY REDUCED AND HAS CREATED DANGEROUS THROTTLE LAG AND IMPROPER AUTOMATIC TRANSMISSION GEAR SELECTION. I WOULD SUMMARIZE THESE ISSUES AS TURBO LAG AND IMPROPER SHIFT MAPPING.    WHEN ACCELERATING FROM A COMPLETE STOP THERE IS A 2-3 SECOND LAG BEFORE THE VEHICLE BEGINS TO MOVE EVEN IF THE THROTTLE IS FULLY DEPRESSED. IF YOU ARE EXECUTING A RIGHT OR LEFT T"
+    },
+    {
+     "odino": "11242653",
+     "available_at": "2019-08-08",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "ECODIESEL-POST EPA REQUIRED REPAIRS- TURBO LAG / DELAYED ACCELERATION.  UP TO A TWO SECOND TIME DELAY BEFORE VEHICLE WILL PROCEED UPON FULL THROTTLE DEMAND TO MERGE INTO TRAFFIC OR FROM A STOP SIGN OR NEEDING TO PASS A VEHICLE AT HIGHWAY SPEEDS.. THE DELAY WILL CAUSE AN ACCIDENT TO OCCUR.  PRIOR TO THE EPA REPAIRS, VEHICLE DID NOT HAVE ANY TURBO LAG/ACCELERATION ISSUES.  ONE COULD ACCELERATE WITH FULL, PARTIAL OR MINIMAL THROTTLE AND HAVE CONFIDENCE IN THE VEHICLE PERFORMING AS NEEDED.  DISCUSSE"
+    },
+    {
+     "odino": "11254867",
+     "available_at": "2019-09-11",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2016
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "RAM WITH ECODIESEL ENGINE AFTER APPROVED EMISSIONS MODIFICATION DUE TO EPA SETTLEMENT.  WHEN ENGINE IS NOT FULLY WARMED UP THERE IS EXCESSIVE (3-5 SECONDS) DELAY IN THROTTLE RESPONSE.  THIS IS AN EXTREMELY DANGEROUS CONDITTION AT ANY INTERSECTION.  WHEN APPLYING THROTTLE TO ENTER AN INTERSECTION AFTER STOPPING, THE VEHICLE SLOWLY MOVES FORWARD INTO THE INTERSECTION WITH NO THROTTLE RESPONSE FOR 3-5 SECONDS CREATING A COLLISION HAZARD TO OCCUPANTS AS WELL AS OTHER VEHICLES"
+    },
+    {
+     "odino": "11269900",
+     "available_at": "2019-10-21",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2015
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "EXTREME LAG DURING ACCELERATION HAS ALMOST RESULTED IN MULTIPLE ACCIDENTS.  WORK COMMUTE HAS ME TURNING LEFT ONTO BUSY ROAD WITH LIMITED VISIBILITY DUE TO BLIND CORNER AND I'VE ALMOST BEEN T-BONED/REAR ENDED BECAUSE OF THE LAG BETWEEN GIVING THE TRUCK GAS AND ACTUAL ACCELERATION. THIS IS BECOMING MORE PREVALENT AS TEMPERATURES DROP.  THIS MORNING I SPUN OUT TRYING TO AVOID BEING REAR ENDED WHILE PULLING OUT BECAUSE THE THROTTLE GOES FROM LAG TO FULL THROTTLE WITH NO GRADUAL ACCELERATION."
+    },
+    {
+     "odino": "11286675",
+     "available_at": "2019-12-03",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2015
+     ],
+     "hazard": "loss_of_propulsion",
+     "narrative": "FROM A COMPLETE STOP, DEPRESSING THE ACCELERATOR PEDAL RESULTS IN MINIMAL ACCELERATION RESULTING IN NUMEROUS NEAR MISSES WHEN CROSSING OR MERGING WITH TRAFFIC.  THIS \"DEAD PEDAL\" CONDITION LASTS FOR SEVERAL SECONDS (3-6) BEFORE THEN SURGING MORE THAN ANTICIPATED, OFTEN RESULTING IN A BRIEF LOSS OF TRACTION.  THIS CONDITION OCCURS REPEATEDLY UNTIL THE ENGINE HAS REACHED NORMAL OPERATING TEMPERATURES (COOLANT >193 F)."
+    },
+    {
+     "odino": "11298389",
+     "available_at": "2020-01-10",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "loss_of_propulsion",
+     "narrative": "2014 ECODIESEL RECEIVED AN UPDATE / REPROGRAMMING OF ENGINE CONTROL UNIT (ECU) AND NOW HAS SERIOUS DRIVABILITY ISSUES, ESPECIALLY WHEN COLD. THROTTLE RESPONSE IS DELAYED AND, IF TRYING TO PULL INTO TRAFFIC, IS DANGEROUS DUE TO THE DELAY IN THROTTLE RESPONSE. IN ADDITION TO DRIVABILITY ISSUES, THE FUEL MILEAGE HAS DECREASED SIGNIFICANTLY, PROBABLY 20%."
+    },
+    {
+     "odino": "11316534",
+     "available_at": "2020-03-06",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2020
+     ],
+     "hazard": "loss_of_propulsion",
+     "narrative": "3.0L GEN 3 ECODIESEL ENGINE HAS EXCESSIVE LAG AND DELAY IN THROTTLE RESPONSE. WHILE TRAVELING AT STEADY SPEED IN LOWER GEARS 3RD, 4TH, OR 5TH AND THEN DEPRESSING ACCELERATOR PEDAL TO INCREASE SPEED, ENGINE WILL NOT RESPOND UNTIL THREE TO FOUR SECONDS HAVE ELAPSED. THIS CREATES A SIGNIFICANT HAZARD WHEN ATTEMPTING TO MERGE INTO TRAFFIC OR CROSS TRAFFIC DURING A LEFT TURN. PRIOR EXPERIENCE WITH MULTIPLE GASOLINE AND DIESEL TURBO-CHARGED VEHICLES HAS NOT PRESENTED THIS ISSUE TO ME. THE 2020 RAM 150"
+    },
+    {
+     "odino": "11321168",
+     "available_at": "2020-04-15",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2020
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "THROTTLE RESPONSE OR ACCELERATION LAG AFTER LETTING OFF THE GAS TO CHANGE LANES OR SLOWING FOR CORNERS ETC.  HAS HAPPENED AT END OF EXIT OFF THE INTERSTATE AFTER STOPPING AT STOP SIGN, THEN PROCEEDING TO MAKE A RIGHT TURN INTO THE LANE.  UPON PRESSING GAS TRUCK SEEMS TO \"COAST\" OR WAIT A FEW SECONDS BEFORE REALIZING IT'S GETTING GAS THEN WILL SUDDENLY ACCELERATE.  YOU HAVE TO WAIT AND NOT GIVE IT GAS FOR A FEW SECONDS FOR IT TO CATCH UP.THIS CAUSES A PROBLEM WHEN CHANGING LANES IN TOWN IN TRAFFI"
+    },
+    {
+     "odino": "11321383",
+     "available_at": "2020-04-17",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2020
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "2020 RAM 1500 ECODIESEL HAS A SERIOUS TURBO LAG. WHEN YIELDING AND THEN ACCELERATING,  THE ENGINE POWER SEEMS TO JUST DROP OUT,  FALLS FLAT.  BY THIS TIME VEHICLE COASTS INTO APPROACHING LANES AND THEN IT WILL SUDDENLY ACCELERATE WITH A BURST OF POWER.  I FEEL IT IS TURBO LAG BUT MAY ALSO BE THAT THE TRANSMISSION IS NOT DOWN SHIFTING IN TIME IN ADDITION. I'VE HEARD NUMEROUS OTHERS MENTION THIS AND IT'S SOMETHING THAT I HAVE TO WATCH FOR CONSTANTLY BUT CANNOT CATCH IT EVERYTIME. THIS SPECIFICALLY"
+    },
+    {
+     "odino": "11330143",
+     "available_at": "2020-06-22",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2020
+     ],
+     "hazard": "unintended_acceleration",
+     "narrative": "ON TWO SEPARATE OCCASIONS IN THE PAST WEEK, THE THROTTLE PEDAL IN THIS GEN 3 ECODIESEL ENGINE HAS FAILED TO RESPOND UPON PRESSING IT TO MAKE A TURN AFTER DRIVING THE TRUCK FOR A FEW MINUTES.  I WILL DRIVE A FEW MILES, THEN STOP IN A TURNING LANE AWAITING A CHANCE TO COMPLETE THE LEFT HAND TURN ACROSS TRAFFIC, AND WHEN I APPLY PRESSURE TO THE THROTTLE PEDAL NOTHING HAPPENS.  IT'S AS IF THE PEDAL HAS BEEN UNPLUGGED.  AS I CONTINUE TO HOLD PRESSURE ON THE PEDAL, SEVERAL SECONDS WILL GO BY AND THEN "
+    }
+   ]
+  },
+  {
+   "id": 74,
+   "hit": false,
+   "signal": {
+    "as_of": "2020-09-27",
+    "make": "MERCEDES-BENZ",
+    "model": "E350",
+    "model_year": 2014,
+    "hazard": "fire_or_fuel_leak",
+    "window_weeks": 13,
+    "complaints": 3,
+    "expected": 0.79,
+    "score": 3.77
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "escalate",
+    "confidence": "high",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 21890,
+    "completion_tokens": 1309,
+    "latency_ms": 9617
+   },
+   "report": {
+    "notes": [],
+    "trend": "rising",
+    "claims": [
+     {
+      "text": "The right rear passenger speaker frequently melts, producing a burning smell and smoke inside the vehicle.",
+      "odinos": [
+       "11331863",
+       "11175141",
+       "11240609",
+       "11257974"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Failures are often preceded by crackling or rattling noises coming from the speaker.",
+      "odinos": [
+       "11331863",
+       "11156393",
+       "11219879",
+       "11129464"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Smoke filling the cabin has caused drivers to believe the vehicle was on fire and pull over.",
+      "odinos": [
+       "11156393",
+       "11219879"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "One dealer identified a faulty amplifier as the cause of the speaker melting.",
+      "odinos": [
+       "11354892"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "The issue has been reported to occur even when the radio is turned off.",
+      "odinos": [
+       "11129464"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "A separate incident involved burned installation and melted wiring due to a missing emissions bolt.",
+      "odinos": [
+       "11360917"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "fire_or_fuel_leak",
+    "summary": "Multiple 2014 vehicles exhibit a consistent failure where the audio speakers, particularly the right rear passenger speaker, melt and emit smoke and burning odors. This issue is often preceded by crackling or rattling noises and may be linked to a faulty amplifier. No existing recall addresses this electrical failure.",
+    "severity": "incident",
+    "rationale": "There is a highly consistent failure mode involving melting speakers and smoke in the cabin for the 2014 model year. This represents a fire hazard and a safety risk to occupants, and it is not covered by any of the listed recalls.",
+    "confidence": "high",
+    "failure_mode": "Audio speaker (primarily right rear) melts, causing smoke and burning odors in the cabin, potentially due to a faulty amplifier.",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 6,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "escalate",
+    "llm_recommendation": "escalate",
+    "affected_model_years": [
+     2014
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "11129464",
+     "available_at": "2018-09-14",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "not_safety_related",
+     "narrative": "RIGHT REAR SPEAKER STARTED MAKING A CRACKLING SOUND AND INTERIOR SMELLS LIKE BURNING RUBBER OR WIRES. SOUND HAPPENS EVEN IF RADIO IS TURNED OFF."
+    },
+    {
+     "odino": "11156393",
+     "available_at": "2018-12-05",
+     "crash": false,
+     "fire": true,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "fire_or_fuel_leak",
+     "narrative": "I WAS DRIVING ON ROUTE 40 (SPEED LIMIT 55MPH, BUT 45 MPH DUE TO CONSTRUCTION) WHEN I BEGAN HEARING RATTLING IN MY REAR PASSENGER SIDE SPEAKER, THEN CRACKLING, A BURNING SMELL AND THEN SMOKE FILLED MY VEHICLE. I BELIEVED MY VEHICLE WAS ON FIRE. HAD I NOT REMAINED CALM, I COULD HAVE CAUSED AN ACCIDENT. I ENDED UP DRIVING TO A NEARBY WALMART PARKING LOT WHERE I LEFT MY VEHICLE UNTIL IT WAS TOWED TO THE DEALERSHIP FOR A DIAGNOSTIC. THE TOW TRUCK DRIVER ALSO CONFIRMED SMELLING THE BURNING UPON STARTI"
+    },
+    {
+     "odino": "11175141",
+     "available_at": "2019-02-08",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "fire_or_fuel_leak",
+     "narrative": "SPEAKER IN RIGHT REAR DOOR HAS MELTED FOR THE SECOND TIME IN 5 MONTHS, CREATING A BURNING ODOR IN VEHICLE."
+    },
+    {
+     "odino": "11219879",
+     "available_at": "2019-06-13",
+     "crash": false,
+     "fire": true,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "fire_or_fuel_leak",
+     "narrative": "THE VEHICLE WAS IN TRANSIT ON THE HIGHWAY AT CRUISING SPEEDS WHEN SUDDENLY THE RIGHT REAR SPEAKER BEGAN TO MAKE NOISES THAT SOUNDED LIKE A RATTLING OR CRACKLING. PREVIOUSLY, THE CAR HAD BEEN MAKING SIMILAR CRACKLING NOISES FROM THE FRONT DASHBOARD, HOWEVER UPON THE SPREAD OF THIS NOISE TO THE RIGHT REAR SPEAKER, THE CAR SOON FILLED WITH THE SMELL OF BURNING RUBBER AND SMOKE. AS THE SMELL PROGRESSED, I PULLED OVER IN FEAR OF A POTENTIAL FIRE AND HAD THE VEHICLE TOWED AFTER I WAS TOLD THAT IT COUL"
+    },
+    {
+     "odino": "11240609",
+     "available_at": "2019-07-30",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "fire_or_fuel_leak",
+     "narrative": "TL* THE CONTACT OWNS A 2014 MERCEDES-BENZ E350. WHILE DRIVING 35 MPH, THE CONTACT SMELLED A BURNING ODOR AND NOTICED SMOKE COMING FROM THE REAR PASSENGER DOOR. THE CONTACT PULLED OVER AND HEARD A SIZZLING NOISE COMING FROM THE REAR PASSENGER DOOR SPEAKER. THE VEHICLE WAS TOWED TO THE CONTACT'S HOME. THE MANUFACTURER WAS NOTIFIED AND ADVISED THAT THE VEHICLE BE TAKEN TO A LOCAL DEALER. THE CONTACT DROVE TO MERCEDES-BENZ OF PLEASANTON (5885 OWENS DR, PLEASANTON, CA 94588, (925) 463-2525) WHERE IT "
+    },
+    {
+     "odino": "11257974",
+     "available_at": "2019-09-25",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "fire_or_fuel_leak",
+     "narrative": "TL* THE CONTACT OWNS A 2014 MERCEDES-BENZ E350. WHILE DRIVING 20 MPH, SMOKE WAS DETECTED COMING FROM THE SPEAKER LOCATED ON THE REAR PASSENGER DOOR. THE VEHICLE WAS TAKEN TO ATLANTA CLASSIC CARS (1705 BOGGS RD NW, DULUTH, GA 30096, (770) 279-3600) AND THE CONTACT WAS INFORMED THAT THE SPEAKER BURST. THE VEHICLE WAS NOT REPAIRED. THE MANUFACTURER WAS MADE AWARE OF THE FAILURE. THE FAILURE MILEAGE WAS APPROXIMATELY 81,000."
+    },
+    {
+     "odino": "11331863",
+     "available_at": "2020-06-30",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "fire_or_fuel_leak",
+     "narrative": "I WAS DRIVING THE CAR DOWN 880 UNTIL I SUDDENLY HEARD A CRACKLINGS NOISE COMING FROM THE BACK OF MY CAR. I HAD JUST GOTTEN THE CAR SERVICED A WEEK BEFORE SO THIS WAS VERY UNPLEASANT AND SURPRISING. I ENDED UP TURNING BACK AND PARKING MY CAR AT HOME. THE NEXT DAY WHILE DRIVING TO THE DEALER I STILL HEARD THE NOISE AND THERE WAS A WEIRD BURNING SMELL. THE NOISE CONTINUED EVEN AFTER SHUTTING OFF THE CAR. I WENT TO THE DEALER AND THEY DIAGNOSED THAT THE RIGHT PASSENGER SPEAKER HAD MELTED AND THEY AL"
+    },
+    {
+     "odino": "11354892",
+     "available_at": "2020-09-14",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "fire_or_fuel_leak",
+     "narrative": "WHILE DRIVING ON THE HIGHWAY THERE WAS A BURNING SMELL COMING FROM INSIDE THE CAR. MY SON PULLED OVER AND OPENED THE DRIVER SIDE DOOR THERE WAS SMOKE COMING FROM THE FRONT DOOR SPEAKER. WE FOUND SEVERAL COMPLAINTS ONLINE OF THE SAME ISSUE WITH SAME YEAR MAKE AND MODEL OF MERCEDES. WE BROUGHT IT TO RAY CATENA IN EDISON NJ EXPLAINED THE PROBLEM AND THEY STATED IT WAS NOT COVERED EVEN THOUGH THEY STATED A FAULTY AMPLIFIER AFTER TRYING TO REPLACE THE SPEAKER WHICH MELTED ON THEM AS WELL. THIS IS A D"
+    },
+    {
+     "odino": "11360917",
+     "available_at": "2020-09-24",
+     "crash": false,
+     "fire": true,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2014
+     ],
+     "hazard": "fire_or_fuel_leak",
+     "narrative": "TL* THE CONTACT OWNS A 2014 MERCEDES BENZ E-350. THE CONTACT STATED THAT THERE WERE HIGH TEMPERATURE EMISSION FUMES COMING INTO THE ENGINE AND PASSENGER COMPARTMENTS. A MISSING BOLT THAT HOLDS THE EMISSIONS PORTIONS THAT ROUTS THE EMISSION FUMES OUT OF THE VEHICLE. THE ENGINE COMPARTMENT NOW HAD DAMAGE OF BURNED INSTALLATION, MELTED ELECTRICAL WIRING AND COMPONENTS AND THE FIRE WALL ALL HAVING TO BE REPLACED. THE DEALER (MERCEDES-BENZ OF WEST HOUSTON 1025 HIGHWAY 6 N, HOUSTON, TX 77079 (281) 492"
+    }
+   ]
+  },
+  {
+   "id": 78,
+   "hit": true,
+   "signal": {
+    "as_of": "2020-12-06",
+    "make": "CHEVROLET",
+    "model": "AVALANCHE",
+    "model_year": 2008,
+    "hazard": "airbag_or_restraint",
+    "window_weeks": 13,
+    "complaints": 3,
+    "expected": 0.3,
+    "score": 3.57
+   },
+   "baseline": {
+    "tag": "triage-dev:agent",
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "status": "ok",
+    "recommendation": "dismiss",
+    "confidence": "high",
+    "llm_calls": 4,
+    "tool_calls": 2,
+    "prompt_tokens": 10127,
+    "completion_tokens": 1133,
+    "latency_ms": 8431
+   },
+   "report": {
+    "notes": [],
+    "trend": "unclear",
+    "claims": [
+     {
+      "text": "One vehicle experienced unintended side airbag deployment during a tire blowout at speeds under 10mph without a crash.",
+      "odinos": [
+       "11366641"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Multiple vehicles from the 2008 model year report airbag warning lights or sensor failures.",
+      "odinos": [
+       "11376109",
+       "11042552",
+       "11061069",
+       "10897113"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "A consumer reported difficulty obtaining parts for a previously announced airbag recall.",
+      "odinos": [
+       "11377766"
+      ],
+      "critic_checked": true
+     },
+     {
+      "text": "Several model years exhibit dashboard cracking in the area of the passenger airbag, raising concerns about debris during deployment.",
+      "odinos": [
+       "11352771",
+       "10671696",
+       "10885925",
+       "11245498",
+       "10894960",
+       "11032311"
+      ],
+      "critic_checked": true
+     }
+    ],
+    "hazard": "airbag_or_restraint",
+    "summary": "The signal consists of three unrelated complaints: one reporting unintended side airbag deployment during a tire blowout, one reporting a warning light, and one regarding the unavailability of parts for a previous recall. Other complaints for this vehicle show a pattern of dashboard cracking and generic airbag sensor failures, but no single consistent defect is evident.",
+    "severity": "incident",
+    "rationale": "The complaints in the signal do not describe a consistent failure mode. One is an isolated incident of unintended deployment, one is a generic warning light, and one is a complaint about recall execution. While dashboard cracking is a recurring theme in the broader data, it is not the primary signal and does not constitute a consistent airbag system failure.",
+    "confidence": "high",
+    "failure_mode": "mixed/unrelated",
+    "verification": [
+     {
+      "round": 1,
+      "claims": 4,
+      "report": true,
+      "critic_error": null,
+      "invalid_citations": 0,
+      "unsupported_claims": 0
+     }
+    ],
+    "dropped_claims": [],
+    "recommendation": "dismiss",
+    "llm_recommendation": "dismiss",
+    "affected_model_years": [
+     2008
+    ]
+   },
+   "complaints": [
+    {
+     "odino": "10671696",
+     "available_at": "2015-01-11",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2012
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "DASHBOARD ON A 2012 CHEVROLET AVALANCHE LTZ CRACKED IN THE AREA OF THE PASSENGER AIRBAG. CONCERNED THAT THIS DEFECT MAY CAUSE SHRAPNEL IN THE EVENT OF AN AIRBAG DEPLOYMENT.  *TR"
+    },
+    {
+     "odino": "10885925",
+     "available_at": "2016-07-19",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2007
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "THE DASH IS SLIT FROM THE AIRBAG MODULE INSERT TO THE FRONT VENT WHICH WILL CAUSE THE DASH TO FRACTURE IN THE EVENT OF AIRBAG DEPLOYMENT RESULTING IN HIGH SPEED SHARDS BEING PROPELLED INTO THE CABIN."
+    },
+    {
+     "odino": "10894960",
+     "available_at": "2016-08-11",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2009
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "DASHBOARD CRACKS AROUND PASSENGER AIRBAG IF AIRBAG IS DEPLOYED BROKEN DASH WILL BECOME DANGEROUS DEBRIS."
+    },
+    {
+     "odino": "10897113",
+     "available_at": "2016-08-19",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2008
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "TL* THE CONTACT OWNS A 2008 CHEVROLET AVALANCHE. WHEN THE VEHICLE WAS STARTED, THE AIR BAG WARNING LIGHT ILLUMINATED. THE DEALER DIAGNOSED THAT THE AIR BAG WARNING SENSOR NEEDED TO BE REPLACED. THE VEHICLE WAS REPAIRED; HOWEVER, THE FAILURE RECURRED TWICE. THE MANUFACTURER WAS NOTIFIED OF THE FAILURE. THE APPROXIMATE FAILURE MILEAGE WAS 38,400."
+    },
+    {
+     "odino": "11032311",
+     "available_at": "2017-10-09",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2013
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "CRACKED DASHBOARD ON TOP OF AIRBAG. SAFETY ISSUE IF AIRBAG DEPLOYS."
+    },
+    {
+     "odino": "11042552",
+     "available_at": "2017-11-02",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2008
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "TAKATA RECALL MY AIRBAG LIGHT KEEPS COMING ON."
+    },
+    {
+     "odino": "11061069",
+     "available_at": "2018-01-07",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2008
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "SERVICE AIRBAG ON DASH DRIVING AND STATIONARY"
+    },
+    {
+     "odino": "11245498",
+     "available_at": "2019-08-21",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2007
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "PLASTIC DASH PANEL CRACKED IN FOUR PLACES OVER AIRBAG AND OVER INSTRUMENT CLUSTER CREATING A HIGH RISK FOR SHATTERING OR AIR BAG DEPLOYMENT"
+    },
+    {
+     "odino": "11352771",
+     "available_at": "2020-09-02",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2013
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "2013 CHEVY AVALANCHE DASHBOARD CRACKING, PASSENGER SIDE AROUND AIRBAG, I AM AFRAID OF AIRBAG DEPLOYMENT AND PIECES WRONGFULLY KILLING MY CHILD"
+    },
+    {
+     "odino": "11366641",
+     "available_at": "2020-10-27",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2008
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "WE HAD A BLOWOUT ON OUR 2008 CHEVY AVALANCHE. WHEN THE TIRE BLEW OUT, ALL THE SIDE AIR BAGS DEPLOYED. NO CRASH HAPPENED! ONLY A TIRE BLOWING!! GOING LESS THAN 10MPH."
+    },
+    {
+     "odino": "11376109",
+     "available_at": "2020-11-24",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2008
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "TURNED CAR ON AIRBAG LIGHT SENSOR CAME ON.  IT STAYS ON ALL THE TIME NOW"
+    },
+    {
+     "odino": "11377766",
+     "available_at": "2020-12-03",
+     "crash": false,
+     "fire": false,
+     "injured": 0,
+     "deaths": 0,
+     "model_years": [
+      2008
+     ],
+     "hazard": "airbag_or_restraint",
+     "narrative": "IN JULY 2016 GM SENT ME A NOTICE OF A RECALL  (RECALL 49151) FOR DEFECTIVE AIRBAGS THAT COULD CAUSE INJURY.  I HAVE CALLED THE DEALERSHIP AND THEY SAY THEY HAVE NOT GOT TO ME VEHICLE OR THAT GM HAS NOT PROCEEDED ON THIS AN  I HAVE HEARD NOTHING AS OF TOAD THAT I WOULD BE CONTACTED WHEN THE PARTS ARE AVAILABLE.  I HAVE HEARD NOTHING AS OF TODAY"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+{
+  "tag": "eval-live:investigate-v1",
+  "thresholds": {
+    "min_agreement": 0.6,
+    "max_invalid_rate_increase": 0.1,
+    "max_token_ratio": 1.5,
+    "max_latency_ratio": 2.0
+  },
+  "regressions": [],
+  "runs": [
+    165,
+    166,
+    167,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174
+  ],
+  "matched_cells": 10,
+  "recommendation_agreement": 0.8,
+  "confusion": {
+    "dismiss": {
+      "monitor": 1,
+      "dismiss": 3
+    },
+    "escalate": {
+      "escalate": 4
+    },
+    "monitor": {
+      "monitor": 1,
+      "escalate": 1
+    }
+  },
+  "baseline_metrics": {
+    "invalid_rate": 0.0,
+    "escalate_rate": 0.4,
+    "tokens_p50": 21737.5,
+    "latency_p50_s": 8.8,
+    "mean_llm_calls": 4.2,
+    "mean_tool_calls": 2.1
+  },
+  "candidate_metrics": {
+    "invalid_rate": 0.0,
+    "escalate_rate": 0.5,
+    "tokens_p50": 22945.0,
+    "latency_p50_s": 10.3,
+    "mean_llm_calls": 4.4,
+    "mean_tool_calls": 2.0
+  }
+}
