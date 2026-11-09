@@ -65,6 +65,24 @@ def main(argv: list[str] | None = None) -> int:
     bt = sub.add_parser("backtest", help="tune on 2019-2020, report recall detection on 2021-2025")
     bt.add_argument("--report", type=Path, default=Path("reports/backtest.json"))
 
+    inv = sub.add_parser("investigate", help="agent investigation of one signal as of a date")
+    inv.add_argument("--as-of", type=date.fromisoformat, required=True)
+    inv.add_argument("--signal", type=int, default=1, help="rank in `precursor signals` (1 = top)")
+    inv.add_argument("--make", help="investigate this vehicle x hazard cell instead of a ranked signal")
+    inv.add_argument("--model")
+    inv.add_argument("--year", type=int)
+    inv.add_argument("--hazard")
+    inv.add_argument("--blind", action="store_true", help="mask make and model in everything the LLM sees")
+    inv.add_argument("--no-tools", action="store_true", help="report from the up-front evidence only")
+    inv.add_argument("--no-vector", action="store_true", help="BM25-only search (skips loading the embedding model)")
+    inv.add_argument("--markdown", type=Path, help="also write the report to this file")
+
+    tri = sub.add_parser("triage-eval", help="agent triage of dev-period (2019-2020) alerts vs backtest labels")
+    tri.add_argument("--n-per-class", type=int, default=40, help="alerts sampled among hits and among misses")
+    tri.add_argument("--workers", type=int, default=4, help="concurrent investigations")
+    tri.add_argument("--seed", default="triage-v1")
+    tri.add_argument("--report", type=Path, default=Path("reports/triage.json"))
+
     find = sub.add_parser("search", help="BM25 search over complaint narratives")
     find.add_argument("query")
     find.add_argument("--as-of", type=date.fromisoformat, help="only complaints public by this date")
@@ -149,6 +167,18 @@ def main(argv: list[str] | None = None) -> int:
                 print(name, sel["detector"], "test K=25:", t["recalls"], "precision", t["precision"],
                       "base rate", sel["test_base_rate"])
             print(f"wrote {args.report} in {time.monotonic() - start:.0f}s")
+        elif args.command == "investigate":
+            return _investigate(conn, args)
+        elif args.command == "triage-eval":
+            import json
+
+            from precursor import triage
+
+            report = triage.run(conn, n_per_class=args.n_per_class, workers=args.workers, seed=args.seed)
+            args.report.parent.mkdir(parents=True, exist_ok=True)
+            args.report.write_text(json.dumps(report, indent=2, default=str) + "\n")
+            print(json.dumps({k: report[k] for k in ("sample", "arms", "detector_score")}, indent=2, default=str))
+            print(f"wrote {args.report}")
         elif args.command == "label-recalls":
             from precursor import label
 
@@ -160,6 +190,47 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"[{r['score']:.2f}] {r['odino']} {r['available_at']} | {r['vehicles']} | {r['components']}")
                 print(textwrap.indent(textwrap.shorten(r["narrative"], 300), "    "))
     return 0
+
+
+def _investigate(conn, args) -> int:
+    from dataclasses import replace
+
+    from precursor import evidence, signals
+    from precursor import investigate as inv
+    from precursor.evidence import Signal
+
+    cell = (args.make, args.model, args.year, args.hazard)
+    if any(cell):
+        if not all(cell):
+            print("--make, --model, --year and --hazard go together", file=sys.stderr)
+            return 2
+        if args.hazard not in signals.SIGNAL_HAZARDS:
+            print(f"--hazard must be one of {', '.join(signals.SIGNAL_HAZARDS)}", file=sys.stderr)
+            return 2
+        sig = Signal(args.as_of, args.make.upper(), args.model.upper(), args.year, args.hazard,
+                     window_weeks=signals.DEFAULT_DETECTOR.window_weeks)
+        sig = replace(sig, complaints=len(evidence.cell_complaints(conn, sig)))
+    else:
+        if args.signal < 1:
+            print("--signal must be 1 or more", file=sys.stderr)
+            return 2
+        ranked = signals.signals(conn, args.as_of, k=args.signal)
+        if len(ranked) < args.signal:
+            print(f"only {len(ranked)} signals as of {args.as_of}", file=sys.stderr)
+            return 1
+        s = ranked[args.signal - 1]
+        sig = Signal(args.as_of, s["make"], s["model"], s["model_year"], s["hazard"],
+                     window_weeks=signals.DEFAULT_DETECTOR.window_weeks,
+                     complaints=s["complaints"], expected=s["expected"], score=s["score"])
+    deps = inv.Deps(conn, encode=None if args.no_vector else inv.lazy_encoder(),
+                    use_tools=not args.no_tools, blind=args.blind)
+    row = inv.investigate(deps, sig)
+    print(row["markdown"])
+    if args.markdown:
+        args.markdown.parent.mkdir(parents=True, exist_ok=True)
+        args.markdown.write_text(row["markdown"])
+    print(f"stored investigation {row['id']} ({row['status']})")
+    return 0 if row["status"] == "ok" else 1
 
 
 def _embed(conn, limit: int | None, labeled_only: bool) -> None:

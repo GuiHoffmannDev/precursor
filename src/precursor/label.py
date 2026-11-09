@@ -97,12 +97,9 @@ class LabelError(ValueError):
     pass
 
 
-def parse_label(content: str, narrative: str) -> dict:
-    """Validate the LLM answer and align entity texts to character offsets in the narrative.
-
-    Entities whose text is not in the narrative are dropped and counted, never guessed.
-    """
-    match = re.search(r"\{.*\}", content, re.DOTALL)  # tolerate ```json fences and chatter
+def extract_json(content: str) -> dict:
+    """The JSON object in an LLM answer, tolerating ```json fences and chatter around it."""
+    match = re.search(r"\{.*\}", content, re.DOTALL)
     if not match:
         raise LabelError("no JSON object found")
     try:
@@ -111,6 +108,15 @@ def parse_label(content: str, narrative: str) -> dict:
         raise LabelError(f"invalid JSON: {e}") from e
     if not isinstance(data, dict):
         raise LabelError("answer must be a JSON object")
+    return data
+
+
+def parse_label(content: str, narrative: str) -> dict:
+    """Validate the LLM answer and align entity texts to character offsets in the narrative.
+
+    Entities whose text is not in the narrative are dropped and counted, never guessed.
+    """
+    data = extract_json(content)
     if data.get("hazard") not in HAZARDS:
         raise LabelError(f"hazard must be one of {list(HAZARDS)}, got {data.get('hazard')!r}")
     if data.get("severity") not in SEVERITIES:
@@ -141,15 +147,7 @@ def parse_label(content: str, narrative: str) -> dict:
 
 def parse_recall_label(content: str, text: str) -> dict:
     """Validate a recall answer: a primary hazard and an optional, different secondary one."""
-    match = re.search(r"\{.*\}", content, re.DOTALL)
-    if not match:
-        raise LabelError("no JSON object found")
-    try:
-        data = json.loads(match.group(0))
-    except json.JSONDecodeError as e:
-        raise LabelError(f"invalid JSON: {e}") from e
-    if not isinstance(data, dict):
-        raise LabelError("answer must be a JSON object")
+    data = extract_json(content)
     if data.get("hazard") not in HAZARDS:
         raise LabelError(f"hazard must be one of {list(HAZARDS)}, got {data.get('hazard')!r}")
     secondary = data.get("secondary_hazard")
@@ -162,16 +160,26 @@ def parse_recall_label(content: str, text: str) -> dict:
     return {"hazard": data["hazard"], "secondary_hazard": secondary}
 
 
-def _chat(messages: list[dict], retries: int = 4) -> str:
-    body = json.dumps({
-        "model": MODEL, "stream": False, "think": False,
-        "options": {"temperature": 0}, "messages": messages,
-    }).encode()
-    req = urllib.request.Request(f"{OLLAMA_URL}/api/chat", body, {"Content-Type": "application/json"})
+def _chat(messages: list[dict]) -> str:
+    return ollama_chat(messages)["message"]["content"]
+
+
+def ollama_chat(messages: list[dict], tools: list[dict] | None = None, retries: int = 4) -> dict:
+    """One non-streaming Ollama /api/chat call at temperature 0; returns the raw response.
+
+    The response carries `message` (with `tool_calls` when tools are given) and the token
+    counts `prompt_eval_count` / `eval_count`.
+    """
+    payload = {"model": MODEL, "stream": False, "think": False,
+               "options": {"temperature": 0}, "messages": messages}
+    if tools:
+        payload["tools"] = tools
+    req = urllib.request.Request(f"{OLLAMA_URL}/api/chat", json.dumps(payload).encode(),
+                                 {"Content-Type": "application/json"})
     for attempt in range(retries):
         try:
             with urllib.request.urlopen(req, timeout=120) as resp:
-                return json.load(resp)["message"]["content"]
+                return json.load(resp)
         except urllib.error.HTTPError as e:
             if e.code not in (429, 500, 502, 503, 504) or attempt == retries - 1:
                 raise

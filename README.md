@@ -143,8 +143,95 @@ What this says, and what it does not:
   they offer more cells to match; every detector gets the same leniency, so the
   comparison stays fair, but absolute recall is somewhat optimistic for those campaigns.
 
-**Next:** LangGraph investigation agents that read a signal's complaints and cite them →
-eval harness and LLMOps.
+**Phase 4 — investigation agents with verified citations (done; triage does not beat the base rate)**
+
+Question: can an LLM agent read a signal's complaints, write a report whose every claim
+is backed by real complaints, and triage alerts better than the detector alone?
+
+- **Graph (LangGraph):** `load → agent ⇄ tools → report → verify → critic → (one
+  revision) → finalize`, driving `gemma4:31b-cloud` through Ollama's native tool calling.
+  - *load* (code) builds the brief, all as of the investigation date: the signal's
+    complaints in its window (severe first, 12 shown), monthly counts, counts by model
+    year and by hazard, and the make/model's earlier recalls.
+  - *agent* (LLM + tools, ≤ 8 tool calls, ≤ 6 turns) searches the vehicle's other
+    complaints: hybrid BM25 + vector search (reciprocal-rank fusion), nearest
+    neighbours of a complaint (exact cosine kNN over the vehicle's complaints), and full
+    narratives.
+  - *report* (LLM) writes JSON validated in Python with one repair: summary, hazard,
+    failure mode, affected model years, severity, trend, claims with ODINOs, confidence,
+    and escalate / monitor / dismiss.
+  - *verify* (code) rejects every cited ODINO that does not exist, is not on the signal's
+    make and model, is not eligible (RC/RP/DP or quotes a campaign), is not public by the
+    date, or was never shown to the LLM in this run.
+  - *critic* (LLM) checks each claim against the quoted text and metadata of its valid
+    citations.
+  - One revision round gets both kinds of feedback. Claims still invalid or rejected are
+    dropped; an escalation with fewer than two surviving claims becomes *monitor*.
+- **Strictly as of the date.** The date and vehicle live in the graph state and are
+  bound by code; tools take only a query, an ODINO or a list of ODINOs, with validated
+  arguments and no free SQL. Every query filters `available_at` (and recall
+  `report_received_date`) and applies the same eligibility rules as signal detection.
+- **Prompt injection.** Narratives and recall texts are wrapped in `<complaint>` /
+  `<recall>` tags with angle brackets neutralized, and every prompt says they are
+  untrusted data. The tools are read-only.
+- **Output.** Each run is stored in `investigations`: the report (JSON and markdown),
+  the recommendation, and a trace of every LLM and tool call with tokens and latency
+  (for Phase 5). A median agent run: 4–5 LLM calls, 2 tool calls, ~21k prompt tokens,
+  ~10 s. Example: [`reports/example_investigation.md`](reports/example_investigation.md)
+  (2019 Subaru Forester windshields cracking with no impact, as of 2020-06-07: escalate,
+  five verified claims; no recall on that cell followed in the data, so the backtest
+  would count it as a false alarm).
+- **Citation checks catch real errors.** On the 80 agent runs below, the first drafts
+  had 429 claims: 2 cited complaints that failed the code check and 25 were rejected by
+  the critic. 21 runs were revised, and only one claim was still dropped at the end.
+
+- **Triage evaluation (`reports/triage.json`).** Does the agent's escalate / dismiss
+  call raise the precision of the Phase 3 queue? Alerts: all 2,600 dev-period (2019–2020)
+  alerts of the default detector at K = 25; 187 are hits (a recall on the cell within
+  365 days), a 7.2% base rate. A seeded sample of 40 hits and 40 misses was investigated
+  as of each alert's week, blinded (make and model replaced by `[VEHICLE]` in every
+  prompt, tool result and quoted text). Two arms: the full agent, and the same pipeline
+  without tools (brief only). Precision is projected to the base rate from each arm's
+  sensitivity and false-positive rate; the intervals are Wilson (rates) and bootstrap
+  (precision). The 2021–2025 test years were not used.
+
+  | Arm | Escalated: hits | Escalated: misses | Projected precision (95% CI) | Lift | AUC | Mean LLM / tool calls | Mean prompt tokens |
+  |---|---|---|---|---|---|---|---|
+  | Agent with tools | 75% (60–86%) | 82.5% (68–91%) | 6.6% (5.3–8.1%) | 0.92× | 0.46 | 4.6 / 2.0 | 23.9k |
+  | Brief only, no tools | 62.5% (47–76%) | 75% (60–86%) | 6.1% (4.5–8.0%) | 0.84× | 0.44 | 2.3 / 0 | 6.9k |
+  | Detector score (same sample) | | | | | 0.46 | | |
+
+  **Result: agent triage does not raise precision.** Both arms escalate about four in
+  five alerts, hits and misses alike, and neither ranks hits above misses (AUC below
+  0.5, within noise of chance on 80 alerts). Counting *monitor* as a flag does not help
+  (6.2% and 6.8%). Tools more than triple the tokens and do not change that. The detector's own
+  score does not separate them either, which matches Phase 3: inside the weekly top 25,
+  more complaints do not mean a later recall.
+
+  Why, as far as this sample shows:
+  - **The agent judges complaint coherence, and most alerts are coherent.** A top-25
+    cell is by construction a cluster of similar complaints, so "a specific, consistent
+    failure mode" is nearly always true. Whether a recall follows depends on things
+    complaints do not show: manufacturer testing and warranty data, cost, and whether
+    an earlier campaign or service bulletin already deals with it.
+  - **The label is narrow.** Plausible defects such as the Forester windshields above
+    end without a recall within a year, so they count as false alarms (Phase 3's
+    "precision is a lower bound" applies here too).
+  - **The agent does the minimum.** It made exactly the two tool calls the prompt
+    requires, almost always `search_complaints`, and the extra evidence rarely changed
+    its call.
+  - **Blinding removes a signal on purpose.** Without make and model the model cannot
+    use what it knows about manufacturers' recall habits; that is the price of not
+    letting it remember later recalls. An unblinded run would be easier to beat and
+    harder to trust, so it was not used.
+
+  What the agents are good for, on this evidence: turning an alert into a short,
+  checkable dossier (failure mode, affected years, severity, cited complaints) for a
+  human reviewer, not deciding which alerts to drop. Better triage likely needs
+  features complaints lack (investigation and service-bulletin data, manufacturer
+  recall history) or a model calibrated on labeled outcomes rather than prompted.
+
+**Next:** eval harness and LLMOps (tracing, cost, regression tests) on top of the stored traces.
 
 ## Quickstart
 
@@ -181,6 +268,18 @@ uv run precursor signals --as-of 2024-06-02 -k 15
 uv run precursor backtest                       # tune on 2019-2020, report 2021-2025
 ```
 
+Phase 4 (same Ollama setup):
+
+```bash
+uv run precursor investigate --as-of 2020-06-07 --signal 1      # top signal of that week
+uv run precursor investigate --as-of 2020-06-07 --make SUBARU --model FORESTER --year 2019 \
+    --hazard visibility_or_lighting --markdown reports/example_investigation.md
+uv run precursor triage-eval                                     # dev alerts, writes reports/triage.json (resumable)
+```
+
+`--blind` masks make and model in everything the LLM sees, `--no-tools` reports from the
+brief alone, and `--no-vector` skips loading the embedding model (BM25-only search).
+
 Set `OLLAMA_URL` or `PRECURSOR_LABEL_MODEL` to use another Ollama server or model.
 
 Postgres listens on `127.0.0.1:5433`. Override with `DATABASE_URL`.
@@ -201,6 +300,9 @@ These choices matter for the validity of the backtest, so they are recorded here
 | Signals use the narrative hazard, not the component field | NHTSA rewrote component labels retroactively in 2021. |
 | Complaints quoting a campaign number are excluded from signals | They were written after that recall; the filter is applied to every as-of query. |
 | Tune on 2019–2020, report 2021–2025 | Headline numbers come from years no parameter was chosen on. |
+| Agent tools get the date and vehicle from code, never from the LLM | The model cannot ask for the future or for another vehicle. |
+| Citations are checked in code, then by a critic | A claim survives only with existing, visible, eligible complaints that were shown to the model and support it. |
+| Triage is evaluated blinded, on dev alerts only | Masking make and model limits what the LLM recalls from training; the test years stay untouched. |
 
 ### Known leakage risks (to handle in the backtest)
 
@@ -229,6 +331,9 @@ src/precursor/
   ner.py       GLiNER inference, fine-tuning, span metrics
   gold.py      human gold-label sheet and scoring
   signals.py   vehicle x hazard detector, weekly triage simulation, backtest
+  evidence.py  as-of evidence for investigations: signal brief, hybrid/kNN search, recalls, citation check
+  investigate.py  LangGraph investigation agent, report validation, verification, storage
+  triage.py    agent triage of dev-period alerts against backtest labels
   cli.py       `precursor` command
 tests/         parser unit tests + DB integration tests (throwaway precursor_test database)
 ```

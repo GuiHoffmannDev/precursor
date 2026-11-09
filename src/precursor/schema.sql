@@ -141,3 +141,37 @@ create table if not exists recalls (
 
 create index if not exists recalls_vehicle_idx on recalls (make, model, model_year);
 create index if not exists recalls_received_idx on recalls (report_received_date);
+
+-- Agent investigations of signals (Phase 4). One row per run as of a date. The report's
+-- claims cite complaint ODINOs that were verified in code; the trace keeps every LLM and
+-- tool call with tokens and latency, for the evaluation harness.
+create table if not exists investigations (
+    id                  bigserial primary key,
+    as_of               date not null,
+    make                text not null,
+    model               text not null,
+    model_year          integer not null,
+    hazard              text not null,
+    signal              jsonb not null,         -- detector window, complaint count, expected, score
+    tag                 text not null,          -- 'adhoc', or an evaluation run such as 'triage-dev:agent'
+    prompt_version      text not null,
+    llm                 text not null,
+    blind               boolean not null,       -- make and model masked in everything the LLM saw
+    use_tools           boolean not null,
+    status              text not null,          -- 'ok', or 'invalid' when no valid report was produced
+    recommendation      text,                   -- escalate / monitor / dismiss
+    confidence          text,
+    report              jsonb,
+    markdown            text,
+    error               text,
+    trace               jsonb not null,
+    llm_calls           integer not null,
+    tool_calls          integer not null,
+    prompt_tokens       integer not null,
+    completion_tokens   integer not null,
+    latency_ms          integer not null,
+    created_at          timestamptz not null default now()
+);
+
+create index if not exists investigations_lookup_idx
+    on investigations (tag, make, model, model_year, hazard, as_of);

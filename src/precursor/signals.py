@@ -29,11 +29,10 @@ import psycopg
 from scipy.stats import poisson
 
 from precursor.label import EXCLUDED_SOURCES, HAZARDS, RECALL_PROMPT_VERSION
+from precursor.search import CAMPAIGN_RE
 
 SIGNAL_HAZARDS = tuple(h for h in HAZARDS if h != "not_safety_related")
 NH = len(SIGNAL_HAZARDS)
-# Narratives quoting an NHTSA campaign number (14V373000, 14V-373, 18E012) postdate that recall.
-CAMPAIGN_RE = r"\m\d{2}[VETC]-?\d{3}(000)?\M"
 EPOCH = date(1970, 1, 1)
 YEAR = 365
 LEADS = (0, 30, 90, 180)  # days before RCDATE

@@ -1,0 +1,1771 @@
+{
+  "protocol": {
+    "period": [
+      "2019-01-01",
+      "2020-12-31"
+    ],
+    "detector": {
+      "method": "disproportionality",
+      "window_weeks": 13,
+      "min_count": 3,
+      "severe_weight": 2.0,
+      "k_per_week": 25
+    },
+    "label": "hit = a recall on the alert's cell reported within 365 days (as in the backtest)",
+    "blind": true,
+    "prompt_version": "investigate-v1",
+    "llm": "gemma4:31b-cloud",
+    "seed": "triage-v1",
+    "arms": {
+      "agent": {
+        "use_tools": true
+      },
+      "no_tools": {
+        "use_tools": false
+      }
+    },
+    "max_tool_calls": 8,
+    "max_revisions": 1,
+    "projection": "precision = TPR*b / (TPR*b + FPR*(1-b)), b = dev base rate; CI by bootstrap"
+  },
+  "sample": {
+    "dev_alerts": 2600,
+    "dev_hits": 187,
+    "base_rate": 0.0719,
+    "hits": 40,
+    "misses": 40
+  },
+  "arms": {
+    "agent": {
+      "recommendations": {
+        "hits": {
+          "escalate": 30,
+          "monitor": 0,
+          "dismiss": 10,
+          "null": 0
+        },
+        "misses": {
+          "escalate": 33,
+          "monitor": 2,
+          "dismiss": 5,
+          "null": 0
+        }
+      },
+      "invalid_runs": 0,
+      "escalate": {
+        "sensitivity": 0.75,
+        "sensitivity_ci95": [
+          0.5981,
+          0.8581
+        ],
+        "false_positive_rate": 0.825,
+        "false_positive_rate_ci95": [
+          0.6805,
+          0.9125
+        ],
+        "flagged_share_projected": 0.8196,
+        "projected_precision": 0.0658,
+        "projected_precision_ci95": [
+          0.053,
+          0.0807
+        ],
+        "lift_over_base_rate": 0.92
+      },
+      "escalate_or_monitor": {
+        "sensitivity": 0.75,
+        "sensitivity_ci95": [
+          0.5981,
+          0.8581
+        ],
+        "false_positive_rate": 0.875,
+        "false_positive_rate_ci95": [
+          0.7389,
+          0.9454
+        ],
+        "flagged_share_projected": 0.866,
+        "projected_precision": 0.0623,
+        "projected_precision_ci95": [
+          0.0498,
+          0.0761
+        ],
+        "lift_over_base_rate": 0.87
+      },
+      "auc_recommendation": 0.4562,
+      "mean_claims_kept": 5.22,
+      "mean_claims_dropped": 0.01,
+      "mean_llm_calls": 4.6,
+      "mean_tool_calls": 2.0,
+      "mean_prompt_tokens": 23860.3,
+      "mean_completion_tokens": 1704.6,
+      "mean_latency_s": 11.3
+    },
+    "no_tools": {
+      "recommendations": {
+        "hits": {
+          "escalate": 25,
+          "monitor": 7,
+          "dismiss": 8,
+          "null": 0
+        },
+        "misses": {
+          "escalate": 30,
+          "monitor": 4,
+          "dismiss": 6,
+          "null": 0
+        }
+      },
+      "invalid_runs": 0,
+      "escalate": {
+        "sensitivity": 0.625,
+        "sensitivity_ci95": [
+          0.4703,
+          0.7578
+        ],
+        "false_positive_rate": 0.75,
+        "false_positive_rate_ci95": [
+          0.5981,
+          0.8581
+        ],
+        "flagged_share_projected": 0.741,
+        "projected_precision": 0.0607,
+        "projected_precision_ci95": [
+          0.0449,
+          0.0799
+        ],
+        "lift_over_base_rate": 0.84
+      },
+      "escalate_or_monitor": {
+        "sensitivity": 0.8,
+        "sensitivity_ci95": [
+          0.6524,
+          0.895
+        ],
+        "false_positive_rate": 0.85,
+        "false_positive_rate_ci95": [
+          0.7093,
+          0.9294
+        ],
+        "flagged_share_projected": 0.8464,
+        "projected_precision": 0.068,
+        "projected_precision_ci95": [
+          0.0558,
+          0.0826
+        ],
+        "lift_over_base_rate": 0.95
+      },
+      "auc_recommendation": 0.4406,
+      "mean_claims_kept": 4.12,
+      "mean_claims_dropped": 0.0,
+      "mean_llm_calls": 2.3,
+      "mean_tool_calls": 0.0,
+      "mean_prompt_tokens": 6872.3,
+      "mean_completion_tokens": 861.8,
+      "mean_latency_s": 5.4
+    }
+  },
+  "detector_score": {
+    "auc": 0.4597
+  },
+  "alerts": [
+    {
+      "as_of": "2019-01-06",
+      "make": "MAZDA",
+      "model": "MAZDA6",
+      "model_year": 2011,
+      "hazard": "structural_or_detachment",
+      "score": 1.98,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 6,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 83,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-01-20",
+      "make": "TOYOTA",
+      "model": "CAMRY HYBRID",
+      "model_year": 2007,
+      "hazard": "braking_failure",
+      "score": 10.03,
+      "complaints": 9,
+      "hit": false,
+      "agent": {
+        "id": 3,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 86,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-01-27",
+      "make": "CHEVROLET",
+      "model": "CRUZE",
+      "model_year": 2012,
+      "hazard": "loss_of_propulsion",
+      "score": 4.22,
+      "complaints": 12,
+      "hit": false,
+      "agent": {
+        "id": 4,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      },
+      "no_tools": {
+        "id": 88,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-02-17",
+      "make": "CHEVROLET",
+      "model": "SILVERADO 1500",
+      "model_year": 2018,
+      "hazard": "braking_failure",
+      "score": 2.97,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 5,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 84,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-02-17",
+      "make": "FORD",
+      "model": "MUSTANG",
+      "model_year": 2015,
+      "hazard": "airbag_or_restraint",
+      "score": 4.04,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 7,
+        "recommendation": "monitor",
+        "confidence": "medium"
+      },
+      "no_tools": {
+        "id": 85,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-02-24",
+      "make": "NISSAN",
+      "model": "PATHFINDER",
+      "model_year": 2014,
+      "hazard": "structural_or_detachment",
+      "score": 5.01,
+      "complaints": 7,
+      "hit": false,
+      "agent": {
+        "id": 8,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 87,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-03-03",
+      "make": "DODGE",
+      "model": "DART",
+      "model_year": 2015,
+      "hazard": "loss_of_propulsion",
+      "score": 3.17,
+      "complaints": 10,
+      "hit": true,
+      "agent": {
+        "id": 9,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 90,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-03-03",
+      "make": "GMC",
+      "model": "SIERRA 1500",
+      "model_year": 2015,
+      "hazard": "braking_failure",
+      "score": 30.67,
+      "complaints": 30,
+      "hit": true,
+      "agent": {
+        "id": 12,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 94,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-03-10",
+      "make": "MERCEDES-BENZ",
+      "model": "E350",
+      "model_year": 2007,
+      "hazard": "fire_or_fuel_leak",
+      "score": 2.68,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 10,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 91,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-03-10",
+      "make": "TOYOTA",
+      "model": "YARIS",
+      "model_year": 2007,
+      "hazard": "airbag_or_restraint",
+      "score": 3.36,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 11,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 89,
+        "recommendation": "monitor",
+        "confidence": "low"
+      }
+    },
+    {
+      "as_of": "2019-03-10",
+      "make": "VOLKSWAGEN",
+      "model": "PASSAT",
+      "model_year": 2012,
+      "hazard": "airbag_or_restraint",
+      "score": 3.4,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 13,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 93,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-03-17",
+      "make": "JEEP",
+      "model": "GRAND CHEROKEE",
+      "model_year": 2015,
+      "hazard": "rollaway_or_shifter",
+      "score": 3.02,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 14,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 92,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-05-05",
+      "make": "JEEP",
+      "model": "GRAND CHEROKEE",
+      "model_year": 2019,
+      "hazard": "braking_failure",
+      "score": 2.74,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 15,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 95,
+        "recommendation": "monitor",
+        "confidence": "low"
+      }
+    },
+    {
+      "as_of": "2019-05-12",
+      "make": "BMW",
+      "model": "X3",
+      "model_year": 2019,
+      "hazard": "structural_or_detachment",
+      "score": 3.0,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 16,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 96,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-05-12",
+      "make": "JEEP",
+      "model": "CHEROKEE",
+      "model_year": 2016,
+      "hazard": "loss_of_propulsion",
+      "score": 5.03,
+      "complaints": 21,
+      "hit": false,
+      "agent": {
+        "id": 17,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 97,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-06-02",
+      "make": "CHEVROLET",
+      "model": "MALIBU",
+      "model_year": 2018,
+      "hazard": "loss_of_propulsion",
+      "score": 3.26,
+      "complaints": 10,
+      "hit": true,
+      "agent": {
+        "id": 19,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 99,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-06-09",
+      "make": "MITSUBISHI",
+      "model": "OUTLANDER",
+      "model_year": 2009,
+      "hazard": "structural_or_detachment",
+      "score": 2.56,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 18,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 98,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-07-14",
+      "make": "FORD",
+      "model": "F-150",
+      "model_year": 2014,
+      "hazard": "braking_failure",
+      "score": 10.51,
+      "complaints": 15,
+      "hit": true,
+      "agent": {
+        "id": 20,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 101,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-08-18",
+      "make": "SUBARU",
+      "model": "FORESTER",
+      "model_year": 2016,
+      "hazard": "airbag_or_restraint",
+      "score": 4.83,
+      "complaints": 11,
+      "hit": true,
+      "agent": {
+        "id": 22,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 100,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-08-25",
+      "make": "CAN-AM",
+      "model": "RYKER",
+      "model_year": 2019,
+      "hazard": "tire_or_wheel",
+      "score": 3.59,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 21,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 103,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-09-08",
+      "make": "MAZDA",
+      "model": "MAZDA6",
+      "model_year": 2003,
+      "hazard": "airbag_or_restraint",
+      "score": 3.47,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 23,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 102,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-09-15",
+      "make": "SUBARU",
+      "model": "FORESTER",
+      "model_year": 2017,
+      "hazard": "airbag_or_restraint",
+      "score": 18.41,
+      "complaints": 25,
+      "hit": true,
+      "agent": {
+        "id": 27,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 105,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-09-29",
+      "make": "FORD",
+      "model": "F-350 SD",
+      "model_year": 2016,
+      "hazard": "loss_of_steering",
+      "score": 2.77,
+      "complaints": 4,
+      "hit": false,
+      "agent": {
+        "id": 24,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 104,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-09-29",
+      "make": "JEEP",
+      "model": "LIBERTY",
+      "model_year": 2012,
+      "hazard": "structural_or_detachment",
+      "score": 2.62,
+      "complaints": 5,
+      "hit": false,
+      "agent": {
+        "id": 25,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 106,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-10-06",
+      "make": "TOYOTA",
+      "model": "SIENNA",
+      "model_year": 2006,
+      "hazard": "unintended_acceleration",
+      "score": 5.21,
+      "complaints": 4,
+      "hit": false,
+      "agent": {
+        "id": 26,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 114,
+        "recommendation": "monitor",
+        "confidence": "low"
+      }
+    },
+    {
+      "as_of": "2019-10-20",
+      "make": "NISSAN",
+      "model": "ALTIMA",
+      "model_year": 2011,
+      "hazard": "loss_of_propulsion",
+      "score": 2.52,
+      "complaints": 8,
+      "hit": false,
+      "agent": {
+        "id": 31,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 107,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-11-10",
+      "make": "JEEP",
+      "model": "GRAND CHEROKEE",
+      "model_year": 2011,
+      "hazard": "loss_of_propulsion",
+      "score": 3.8,
+      "complaints": 16,
+      "hit": true,
+      "agent": {
+        "id": 30,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 109,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2019-11-17",
+      "make": "DODGE",
+      "model": "AVENGER",
+      "model_year": 2013,
+      "hazard": "airbag_or_restraint",
+      "score": 2.34,
+      "complaints": 4,
+      "hit": false,
+      "agent": {
+        "id": 28,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 108,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-12-22",
+      "make": "KIA",
+      "model": "OPTIMA",
+      "model_year": 2015,
+      "hazard": "fire_or_fuel_leak",
+      "score": 3.75,
+      "complaints": 6,
+      "hit": true,
+      "agent": {
+        "id": 29,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 111,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-12-22",
+      "make": "KIA",
+      "model": "SORENTO",
+      "model_year": 2012,
+      "hazard": "fire_or_fuel_leak",
+      "score": 3.76,
+      "complaints": 6,
+      "hit": true,
+      "agent": {
+        "id": 35,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 110,
+        "recommendation": "dismiss",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-12-22",
+      "make": "KIA",
+      "model": "SORENTO",
+      "model_year": 2016,
+      "hazard": "fire_or_fuel_leak",
+      "score": 4.76,
+      "complaints": 5,
+      "hit": false,
+      "agent": {
+        "id": 34,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      },
+      "no_tools": {
+        "id": 112,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2019-12-29",
+      "make": "HYUNDAI",
+      "model": "SONATA",
+      "model_year": 2011,
+      "hazard": "fire_or_fuel_leak",
+      "score": 2.85,
+      "complaints": 7,
+      "hit": false,
+      "agent": {
+        "id": 32,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 113,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-01-05",
+      "make": "DODGE",
+      "model": "JOURNEY",
+      "model_year": 2010,
+      "hazard": "loss_of_propulsion",
+      "score": 2.4,
+      "complaints": 7,
+      "hit": false,
+      "agent": {
+        "id": 33,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 115,
+        "recommendation": "dismiss",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-01-12",
+      "make": "MERCEDES-BENZ",
+      "model": "C300",
+      "model_year": 2012,
+      "hazard": "airbag_or_restraint",
+      "score": 4.35,
+      "complaints": 5,
+      "hit": true,
+      "agent": {
+        "id": 36,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 116,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-01-26",
+      "make": "TESLA",
+      "model": "MODEL S",
+      "model_year": 2017,
+      "hazard": "unintended_acceleration",
+      "score": 3.85,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 41,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 117,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-02-09",
+      "make": "CHEVROLET",
+      "model": "SILVERADO 1500",
+      "model_year": 2020,
+      "hazard": "braking_failure",
+      "score": 3.86,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 37,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 119,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-02-09",
+      "make": "SATURN",
+      "model": "AURA",
+      "model_year": 2009,
+      "hazard": "loss_of_steering",
+      "score": 3.26,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 39,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 118,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-02-16",
+      "make": "CHRYSLER",
+      "model": "TOWN AND COUNTRY",
+      "model_year": 2010,
+      "hazard": "loss_of_steering",
+      "score": 3.16,
+      "complaints": 7,
+      "hit": false,
+      "agent": {
+        "id": 38,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 120,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-02-16",
+      "make": "DODGE",
+      "model": "DURANGO",
+      "model_year": 2014,
+      "hazard": "visibility_or_lighting",
+      "score": 11.82,
+      "complaints": 25,
+      "hit": false,
+      "agent": {
+        "id": 40,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 121,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-02-23",
+      "make": "KIA",
+      "model": "SOUL",
+      "model_year": 2014,
+      "hazard": "fire_or_fuel_leak",
+      "score": 4.98,
+      "complaints": 10,
+      "hit": true,
+      "agent": {
+        "id": 42,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 127,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-02-23",
+      "make": "TOYOTA",
+      "model": "PRIUS",
+      "model_year": 2013,
+      "hazard": "electrical_or_instrument",
+      "score": 2.88,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 44,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 122,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-03-15",
+      "make": "GMC",
+      "model": "YUKON XL",
+      "model_year": 2008,
+      "hazard": "airbag_or_restraint",
+      "score": 2.5,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 43,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 123,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-03-29",
+      "make": "HONDA",
+      "model": "ACCORD",
+      "model_year": 2015,
+      "hazard": "loss_of_propulsion",
+      "score": 2.21,
+      "complaints": 11,
+      "hit": true,
+      "agent": {
+        "id": 46,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 124,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-03-29",
+      "make": "TOYOTA",
+      "model": "HIGHLANDER",
+      "model_year": 2006,
+      "hazard": "braking_failure",
+      "score": 2.17,
+      "complaints": 4,
+      "hit": false,
+      "agent": {
+        "id": 45,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 125,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-04-05",
+      "make": "NISSAN",
+      "model": "ROGUE",
+      "model_year": 2014,
+      "hazard": "structural_or_detachment",
+      "score": 2.12,
+      "complaints": 5,
+      "hit": false,
+      "agent": {
+        "id": 48,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      },
+      "no_tools": {
+        "id": 126,
+        "recommendation": "monitor",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-04-19",
+      "make": "FORD",
+      "model": "FUSION",
+      "model_year": 2007,
+      "hazard": "airbag_or_restraint",
+      "score": 2.0,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 47,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 128,
+        "recommendation": "dismiss",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-04-19",
+      "make": "NISSAN",
+      "model": "ROGUE",
+      "model_year": 2017,
+      "hazard": "structural_or_detachment",
+      "score": 2.36,
+      "complaints": 7,
+      "hit": false,
+      "agent": {
+        "id": 50,
+        "recommendation": "monitor",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 130,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-04-19",
+      "make": "SUBARU",
+      "model": "CROSSTREK",
+      "model_year": 2018,
+      "hazard": "structural_or_detachment",
+      "score": 2.14,
+      "complaints": 4,
+      "hit": true,
+      "agent": {
+        "id": 49,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 129,
+        "recommendation": "monitor",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-05-03",
+      "make": "JEEP",
+      "model": "CHEROKEE",
+      "model_year": 2017,
+      "hazard": "rollaway_or_shifter",
+      "score": 39.13,
+      "complaints": 35,
+      "hit": true,
+      "agent": {
+        "id": 52,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 133,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-05-17",
+      "make": "CHEVROLET",
+      "model": "EQUINOX",
+      "model_year": 2015,
+      "hazard": "visibility_or_lighting",
+      "score": 6.27,
+      "complaints": 9,
+      "hit": false,
+      "agent": {
+        "id": 53,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 131,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-05-31",
+      "make": "HYUNDAI",
+      "model": "SONATA",
+      "model_year": 2013,
+      "hazard": "unintended_acceleration",
+      "score": 1.61,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 51,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 132,
+        "recommendation": "dismiss",
+        "confidence": "low"
+      }
+    },
+    {
+      "as_of": "2020-06-07",
+      "make": "FORD",
+      "model": "EXPLORER",
+      "model_year": 2015,
+      "hazard": "loss_of_steering",
+      "score": 1.82,
+      "complaints": 4,
+      "hit": true,
+      "agent": {
+        "id": 54,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 135,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-06-07",
+      "make": "HONDA",
+      "model": "ACCORD",
+      "model_year": 2014,
+      "hazard": "loss_of_propulsion",
+      "score": 1.63,
+      "complaints": 8,
+      "hit": true,
+      "agent": {
+        "id": 55,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 136,
+        "recommendation": "monitor",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-06-07",
+      "make": "HYUNDAI",
+      "model": "TUCSON",
+      "model_year": 2016,
+      "hazard": "fire_or_fuel_leak",
+      "score": 1.88,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 56,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      },
+      "no_tools": {
+        "id": 134,
+        "recommendation": "monitor",
+        "confidence": "low"
+      }
+    },
+    {
+      "as_of": "2020-06-14",
+      "make": "FORD",
+      "model": "EXPLORER",
+      "model_year": 2015,
+      "hazard": "structural_or_detachment",
+      "score": 1.65,
+      "complaints": 4,
+      "hit": true,
+      "agent": {
+        "id": 57,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 139,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-06-14",
+      "make": "NISSAN",
+      "model": "ALTIMA",
+      "model_year": 2013,
+      "hazard": "rollaway_or_shifter",
+      "score": 1.63,
+      "complaints": 4,
+      "hit": false,
+      "agent": {
+        "id": 58,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 138,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-06-14",
+      "make": "SUBARU",
+      "model": "LEGACY",
+      "model_year": 2020,
+      "hazard": "visibility_or_lighting",
+      "score": 2.79,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 59,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 140,
+        "recommendation": "monitor",
+        "confidence": "low"
+      }
+    },
+    {
+      "as_of": "2020-06-28",
+      "make": "RAM",
+      "model": "1500",
+      "model_year": 2020,
+      "hazard": "unintended_acceleration",
+      "score": 2.69,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 61,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 137,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-06-28",
+      "make": "TESLA",
+      "model": "MODEL S",
+      "model_year": 2012,
+      "hazard": "electrical_or_instrument",
+      "score": 5.77,
+      "complaints": 7,
+      "hit": true,
+      "agent": {
+        "id": 60,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 141,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-06-28",
+      "make": "TESLA",
+      "model": "MODEL X",
+      "model_year": 2016,
+      "hazard": "electrical_or_instrument",
+      "score": 3.09,
+      "complaints": 5,
+      "hit": true,
+      "agent": {
+        "id": 62,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 142,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-07-12",
+      "make": "TESLA",
+      "model": "MODEL X",
+      "model_year": 2016,
+      "hazard": "structural_or_detachment",
+      "score": 2.3,
+      "complaints": 5,
+      "hit": true,
+      "agent": {
+        "id": 66,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 143,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-07-26",
+      "make": "NISSAN",
+      "model": "SENTRA",
+      "model_year": 2020,
+      "hazard": "driver_assistance",
+      "score": 5.93,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 63,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 144,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-08-02",
+      "make": "FORD",
+      "model": "FOCUS",
+      "model_year": 2017,
+      "hazard": "loss_of_propulsion",
+      "score": 2.48,
+      "complaints": 11,
+      "hit": false,
+      "agent": {
+        "id": 64,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 145,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-08-02",
+      "make": "NISSAN",
+      "model": "ALTIMA",
+      "model_year": 2019,
+      "hazard": "driver_assistance",
+      "score": 9.61,
+      "complaints": 4,
+      "hit": false,
+      "agent": {
+        "id": 67,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 150,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-08-16",
+      "make": "FORD",
+      "model": "EDGE",
+      "model_year": 2016,
+      "hazard": "fire_or_fuel_leak",
+      "score": 2.64,
+      "complaints": 5,
+      "hit": false,
+      "agent": {
+        "id": 65,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 146,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-08-16",
+      "make": "KIA",
+      "model": "FORTE",
+      "model_year": 2014,
+      "hazard": "fire_or_fuel_leak",
+      "score": 3.19,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 68,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 147,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-08-16",
+      "make": "TESLA",
+      "model": "MODEL X",
+      "model_year": 2017,
+      "hazard": "electrical_or_instrument",
+      "score": 2.41,
+      "complaints": 5,
+      "hit": true,
+      "agent": {
+        "id": 69,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 149,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-08-23",
+      "make": "FORD",
+      "model": "ESCAPE",
+      "model_year": 2020,
+      "hazard": "driver_assistance",
+      "score": 2.81,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 70,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 148,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-08-30",
+      "make": "HONDA",
+      "model": "CIVIC",
+      "model_year": 2016,
+      "hazard": "loss_of_steering",
+      "score": 14.99,
+      "complaints": 22,
+      "hit": false,
+      "agent": {
+        "id": 71,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 154,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-09-06",
+      "make": "FORD",
+      "model": "TAURUS",
+      "model_year": 2015,
+      "hazard": "loss_of_steering",
+      "score": 2.54,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 72,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 151,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-09-13",
+      "make": "HONDA",
+      "model": "PILOT",
+      "model_year": 2016,
+      "hazard": "electrical_or_instrument",
+      "score": 3.0,
+      "complaints": 16,
+      "hit": false,
+      "agent": {
+        "id": 73,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 152,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-09-27",
+      "make": "MERCEDES-BENZ",
+      "model": "E350",
+      "model_year": 2014,
+      "hazard": "fire_or_fuel_leak",
+      "score": 3.77,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 74,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 153,
+        "recommendation": "monitor",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-10-04",
+      "make": "AUDI",
+      "model": "A3",
+      "model_year": 2016,
+      "hazard": "airbag_or_restraint",
+      "score": 2.77,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 76,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 155,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-10-25",
+      "make": "NISSAN",
+      "model": "ROGUE",
+      "model_year": 2020,
+      "hazard": "driver_assistance",
+      "score": 8.95,
+      "complaints": 4,
+      "hit": false,
+      "agent": {
+        "id": 77,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 156,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-11-22",
+      "make": "HONDA",
+      "model": "FIT",
+      "model_year": 2015,
+      "hazard": "electrical_or_instrument",
+      "score": 2.92,
+      "complaints": 7,
+      "hit": false,
+      "agent": {
+        "id": 75,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 157,
+        "recommendation": "escalate",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-12-06",
+      "make": "CHEVROLET",
+      "model": "AVALANCHE",
+      "model_year": 2008,
+      "hazard": "airbag_or_restraint",
+      "score": 3.57,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 78,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 159,
+        "recommendation": "monitor",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-12-06",
+      "make": "CHEVROLET",
+      "model": "SUBURBAN",
+      "model_year": 2009,
+      "hazard": "airbag_or_restraint",
+      "score": 2.44,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 80,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 158,
+        "recommendation": "dismiss",
+        "confidence": "high"
+      }
+    },
+    {
+      "as_of": "2020-12-06",
+      "make": "GMC",
+      "model": "YUKON",
+      "model_year": 2012,
+      "hazard": "airbag_or_restraint",
+      "score": 2.17,
+      "complaints": 3,
+      "hit": true,
+      "agent": {
+        "id": 79,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 160,
+        "recommendation": "monitor",
+        "confidence": "low"
+      }
+    },
+    {
+      "as_of": "2020-12-13",
+      "make": "CHEVROLET",
+      "model": "SILVERADO 1500",
+      "model_year": 2015,
+      "hazard": "visibility_or_lighting",
+      "score": 2.54,
+      "complaints": 7,
+      "hit": false,
+      "agent": {
+        "id": 82,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 161,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    },
+    {
+      "as_of": "2020-12-27",
+      "make": "TOYOTA",
+      "model": "CAMRY",
+      "model_year": 2008,
+      "hazard": "braking_failure",
+      "score": 3.98,
+      "complaints": 3,
+      "hit": false,
+      "agent": {
+        "id": 81,
+        "recommendation": "escalate",
+        "confidence": "high"
+      },
+      "no_tools": {
+        "id": 162,
+        "recommendation": "escalate",
+        "confidence": "medium"
+      }
+    }
+  ]
+}
