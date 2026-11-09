@@ -1,15 +1,78 @@
 # Precursor
 
-Agentic product-safety signal detection: find emerging vehicle defect patterns in
-NHTSA consumer complaints **before** they become recalls, then investigate each
-signal with a multi-agent system that cites its evidence.
+![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
+![Tests: 81 passing](https://img.shields.io/badge/tests-81%20passing-brightgreen)
 
-The project is evaluated with a leakage-free backtest: historical recalls (with
-their report dates) are the labels, and every query runs "as of" a past date.
+Agentic product-safety signal detection on **792,953 NHTSA vehicle complaints**. Precursor looks for emerging defect patterns in consumer complaints **before** they become recalls. It then investigates each signal with a LangGraph agent whose every claim cites real complaints, and those citations are checked in code.
 
-## Status
+The project is judged by a **leakage-free backtest**: historical recalls are the labels, dated by the day NHTSA received the manufacturer's report. Every query runs "as of" a past date, and the headline numbers come from years that no parameter was tuned on. Everything runs on a 16 GB Mac:
 
-**Phase 1 — data foundation (done)**
+- Postgres with ParadeDB, which provides BM25 and pgvector.
+- `gte-modernbert-base` embeddings and fine-tuned GLiNER.
+- `gemma4:31b-cloud` through Ollama, for the LLM steps.
+
+## Headline results
+
+Test period 2021–2025: 4,656 vehicle recalls. The budget is 25 new alerts per week. Detector settings were tuned on 2019–2020, and agent triage was evaluated on 2019–2020 alerts only.
+
+| Question | Result | Details |
+| --- | --- | --- |
+| Do complaints show a defect before the recall report? | **Sometimes.** 6.2% of all test recalls alert before the report date, with a median lead of about six months. For recalls influenced by an NHTSA investigation the figure is **36%**. | [Phase 3](#phase-3--signal-detection-and-leakage-free-backtest), [`backtest.json`](reports/backtest.json) |
+| Does a statistical detector beat counting complaints? | **No.** Alert precision: Poisson disproportionality 7.8%, raw count 8.7%, random pick 6.6–7.8%. | [Phase 3](#phase-3--signal-detection-and-leakage-free-backtest) |
+| Does an LLM agent triage alerts better than the detector? | **No.** It escalates 75% of hits and 82.5% of misses. Projected precision is 6.6% against a 7.2% base rate (lift 0.92×, AUC 0.46). | [Phase 4](#phase-4--investigation-agents-with-verified-citations), [`triage.json`](reports/triage.json) |
+| Are the agent's citations trustworthy? | **Yes, after checks.** First drafts had 429 claims. 2 failed the code check, 25 were rejected by the critic, and 1 was still dropped after revision. | [Phase 4](#phase-4--investigation-agents-with-verified-citations), [example report](reports/example_investigation.md) |
+| Can small models replace the LLM labeler? | **Mostly.** An embedding probe matches the LLM's hazard labels with macro-F1 0.67. Fine-tuning GLiNER on LLM spans raises entity F1 from 0.32 to 0.69. | [Phase 2](#phase-2--enrichment) |
+| What does an agent run cost, and is it stable? | **Cheap but not fully deterministic.** A run takes a median 23k tokens, 9.8 s and about $0.003 at assumed prices. Re-running 10 frozen cases gave 80% recommendation agreement. | [Phase 5](#phase-5--eval-harness-and-llmops-on-the-stored-traces), [`ops.json`](reports/ops.json) |
+
+**Honest reading.**
+
+- **The ceiling is the data.** 37% of test recalls cover no vehicle with an eligible complaint, such as trailers, RVs, buses and heavy trucks. Only 32% have even one earlier complaint on a matching vehicle and hazard. Most recalls come from manufacturer testing and warranty data, which complaints do not see.
+- **Complaint-driven recalls are detectable.** About a third of the recalls that NHTSA's own investigations pushed alert months ahead. Some of that lead may come from a public investigation that itself drew complaints; investigation dates are not loaded yet.
+- **Neither the detector nor the agent ranks recalls above false alarms inside the weekly top 25.** A top-25 cell is by construction a coherent cluster of similar complaints, so "this looks like a real defect" is nearly always true. Whether a recall follows depends on cost, testing and earlier campaigns, which complaints do not show.
+- **What the agent is good for:** turning an alert into a short, checkable dossier for a human reviewer. It is not good at deciding which alerts to drop.
+
+## How it works
+
+```mermaid
+flowchart LR
+    N[NHTSA complaint and recall files] --> I[Ingest with as-of dates]
+    I --> P[(Postgres: BM25 + pgvector)]
+    P --> E[Enrich: embeddings, LLM weak labels, distilled classifiers, GLiNER]
+    E --> S[Weekly signals: vehicle x hazard]
+    S --> B[Backtest against recall report dates]
+    S --> A[LangGraph investigation agent]
+    P -->|as-of tools| A
+    A --> V{Citations checked in code, then by a critic}
+    V --> R[Report: escalate / monitor / dismiss]
+    A --> T[(Stored traces)]
+    T --> O[ops-report and regression eval]
+```
+
+1. **Ingest.** NHTSA flat files load idempotently into Postgres. Each complaint gets `available_at`, the first day it was public, and every query filters on it.
+2. **Enrich.** An LLM labels a random sample of complaints with hazard, severity and entity spans. Each answer is validated, with one repair attempt. The labels are then distilled into small classifiers that score the whole corpus, and into a fine-tuned GLiNER entity model.
+3. **Detect.** Each week, every vehicle (make, model, year) × hazard cell gets a score: a Poisson disproportionality score or the raw count. An analyst queue takes the top 25 *new* cells.
+4. **Backtest.** A recall counts as detected when one of its cells alerted in the 365 days before the recall report date. Settings are tuned on 2019–2020 and reported on 2021–2025.
+5. **Investigate.** A LangGraph agent reads the signal's brief, searches the vehicle's complaints through as-of tools, and writes a report. Code rejects any citation that does not exist, is not public by the date, or was never shown to the model. A critic LLM then checks each claim against its quotes.
+6. **Operate.** Every run stores a per-step trace. `ops-report` turns the traces into latency, token, cost and rejection rates. A frozen eval set replays the graph offline as a regression suite.
+
+## What makes this project strong for AI Engineer roles
+
+| Skill | Where to look |
+| --- | --- |
+| **Leakage-free evaluation design.** An as-of schema, a tune/test split by year, filters for complaints the recall process generated, and a list of the leakage risks that remain. | [signals.py](src/precursor/signals.py), [schema.sql](src/precursor/schema.sql), [Data decisions](#data-decisions) |
+| **Hybrid retrieval inside Postgres.** BM25 (`pg_search`) and HNSW vectors (`pgvector`) fused with reciprocal rank fusion, with the as-of filter applied inside the query. | [search.py](src/precursor/search.py), [evidence.py](src/precursor/evidence.py) |
+| **LLM weak labeling and distillation.** Validation, a repair turn and verbatim span checks on the labels; the distilled classifiers are compared on a fixed held-out split. | [label.py](src/precursor/label.py), [classify.py](src/precursor/classify.py) |
+| **NER fine-tuning.** GLiNER trained on LLM spans, with exact and overlap span metrics against a zero-shot baseline. | [ner.py](src/precursor/ner.py) |
+| **Agent with guardrails.** The date and vehicle are bound in code, tools take validated arguments and no free SQL, injection-resistant quoting, citation verification, a critic, and a bounded revision. | [investigate.py](src/precursor/investigate.py), [evidence.py](src/precursor/evidence.py) |
+| **Honest agent evaluation.** A blinded, stratified triage experiment with a no-tools ablation, Wilson and bootstrap intervals, and a negative result reported as such. | [triage.py](src/precursor/triage.py), [triage.json](reports/triage.json) |
+| **LLMOps without a hosted service.** Trace analytics, cost, prompt-version comparison, an offline replay regression suite with trap complaints, and an opt-in live eval with thresholds. | [ops.py](src/precursor/ops.py), [evals.py](src/precursor/evals.py), [test_evals.py](tests/test_evals.py) |
+| **Data engineering at corpus scale.** Staged `COPY` loads with transactional merges and resumable embedding and labeling jobs. | [nhtsa.py](src/precursor/nhtsa.py), [load.py](src/precursor/load.py), [embed.py](src/precursor/embed.py) |
+| **Tested.** 81 tests that need no network; database tests run against a throwaway database. | [tests/](tests) |
+
+## Detailed results by phase
+
+### Phase 1 — data foundation
 
 - Idempotent ingestion of NHTSA complaint and recall flat files into Postgres.
 - As-of schema: every complaint carries the first date it was public.
@@ -19,7 +82,7 @@ Loaded locally (2015-01-01 → 2026-11-04): 792,953 complaints, 247,149 recall r
 (15,379 campaigns). Full 2020–2024 chunk loads in ~21 s; an as-of BM25 query over all
 complaints runs in ~50 ms.
 
-**Phase 2 — enrichment (done; human gold review pending)**
+### Phase 2 — enrichment
 
 - Narrative embeddings (`gte-modernbert-base`, 768-d `halfvec`, HNSW) in pgvector.
   The job is resumable and re-embeds narratives that change in later NHTSA releases.
@@ -57,7 +120,7 @@ complaints runs in ~50 ms.
 - Human gold set: review sheet export/import with strict validation; LLM and
   classifier are scored against it (`precursor gold score`).
 
-**Phase 3 — signal detection and leakage-free backtest (done)**
+### Phase 3 — signal detection and leakage-free backtest
 
 Question: do NHTSA complaints show a defect before the manufacturer files the Part 573
 recall report (`RCDATE`)? Short answer: sometimes, mostly for recalls that NHTSA itself
@@ -143,7 +206,7 @@ What this says, and what it does not:
   they offer more cells to match; every detector gets the same leniency, so the
   comparison stays fair, but absolute recall is somewhat optimistic for those campaigns.
 
-**Phase 4 — investigation agents with verified citations (done; triage does not beat the base rate)**
+### Phase 4 — investigation agents with verified citations
 
 Question: can an LLM agent read a signal's complaints, write a report whose every claim
 is backed by real complaints, and triage alerts better than the detector alone?
@@ -231,7 +294,7 @@ is backed by real complaints, and triage alerts better than the detector alone?
   features complaints lack (investigation and service-bulletin data, manufacturer
   recall history) or a model calibrated on labeled outcomes rather than prompted.
 
-**Phase 5 — eval harness and LLMOps on the stored traces (done)**
+### Phase 5 — eval harness and LLMOps on the stored traces
 
 Question: can the agent's behaviour be measured, priced and guarded against regressions
 from what Phase 4 already stores, without a hosted tracing service?
@@ -402,7 +465,7 @@ These choices matter for the validity of the backtest, so they are recorded here
   may therefore reflect knowledge gained after a recall. The backtest should rely on
   narrative text and vehicle identity, not on the component field alone.
 
-## Layout
+## Repository structure
 
 ```
 src/precursor/
@@ -444,3 +507,31 @@ tests/         parser unit tests + DB integration tests (throwaway precursor_tes
   ~9 GB, pushed the machine into swap (~100 s/step) and starved the database until it
   crashed. Run GPU jobs one at a time and use `ner-train --batch-size 2` (~3 s/step).
   Both `embed` and `label` resume where they stopped, so re-run them after a crash.
+
+## Limitations
+
+- **Labels are model output.** Complaint hazards and severities come from an LLM teacher and the classifiers distilled from it. Recall hazards are also LLM labels. The human gold review that would score both against people is still pending.
+- **The recall label is narrow.** A true defect that ends in a service bulletin, a closed investigation or a recall more than a year later counts as a false alarm, so precision is a lower bound.
+- **Small agent experiments.** Triage was measured on 80 alerts with one model, and the live regression gate has 10 cases. These samples catch a broken prompt or a budget blow-up, not a shift of a few points.
+- **Residual leakage.** The hazard classifier saw complaints from all years, though no recall data. NHTSA rewrote make and model names in 2021 on both sides. Investigation open dates are not loaded, so investigation-driven lead time is not separated.
+- **Costs are estimates.** Ollama cloud is a subscription; the per-token prices in `ops-report` are assumptions you can override.
+- **Local-only setup.** No CI. The database tests need the Compose Postgres, and a full rebuild of the embeddings takes 3–4 hours on an M-series Mac.
+
+## Roadmap
+
+1. Finish the human gold review (`precursor gold import && precursor gold score`).
+2. Load NHTSA investigation and service-bulletin data, and use them as triage features and to separate investigation-driven lead time.
+3. Replace prompted triage with a model calibrated on labeled alert outcomes.
+4. Try a hybrid detector that combines raw volume and disproportionality.
+5. Add CI with a ParadeDB service container.
+6. Write a second investigation prompt version and compare it with `ops-report --compare`.
+
+## Tech stack
+
+[LangGraph](https://docs.langchain.com/oss/python/langgraph/overview) (agent orchestration), [Ollama](https://ollama.com) with `gemma4:31b-cloud` (labeling, agent, critic), [ParadeDB](https://docs.paradedb.com) Postgres 17 with `pg_search` BM25 and [pgvector](https://github.com/pgvector/pgvector) (storage and retrieval), [sentence-transformers](https://sbert.net) with `gte-modernbert-base` (embeddings), [scikit-learn](https://scikit-learn.org) (distillation), [GLiNER](https://github.com/urchade/GLiNER) (NER), psycopg 3, Docker Compose, uv and pytest.
+
+Data: [NHTSA complaints and recalls](https://www.nhtsa.gov/nhtsa-datasets-and-apis), public US government data. The raw files are downloaded by `precursor ingest` and are not committed. The one exception is a frozen eval fixture of short complaint excerpts.
+
+## License
+
+[MIT](LICENSE)
